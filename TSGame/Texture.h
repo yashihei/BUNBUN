@@ -4,24 +4,12 @@
 #include <unordered_map>
 #include <d3d9.h>
 #include <d3dx9.h>
-
-struct RectF {
-	RectF(float x, float y, float w, float h) : x(x), y(y), w(w), h(h) {}
-	float x, y, w, h;
-};
-
-struct TextureVertex {
-	D3DXVECTOR3 p;
-	float rhw;
-	DWORD color;
-	D3DXVECTOR2 t;
-};
+#include "Rect.h"
 
 class Texture {
 public:
 	Texture(std::string filePath, LPDIRECT3DDEVICE9 d3dDevice);
 	~Texture();
-
 	void draw(D3DXVECTOR2 pos, float rad = 0.0f, float scale = 1.0f, const D3DXCOLOR& color = 0xFFFFFFFF, bool mirror = false);
 	void draw(RectF uvRect, D3DXVECTOR2 pos, float rad = 0.0f, float scale = 1.0f, const D3DXCOLOR& color = 0xFFFFFFFF, bool mirror = false);
 	void drawFrame(int col, int row, int index, D3DXVECTOR2 pos, float rad = 0.0f, float scale = 1.0f, const D3DXCOLOR& color = 0xFFFFFFFF, bool mirror = false);

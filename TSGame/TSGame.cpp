@@ -8,6 +8,7 @@
 #include "Random.h"
 #include "Util.h"
 #include "Font.h"
+#include "Animation.h"
 
 TSGame::TSGame(HWND hWnd, HINSTANCE hInstance) :
 GameApp(hWnd, hInstance) 

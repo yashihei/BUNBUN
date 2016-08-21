@@ -2,6 +2,15 @@
 
 #include <vector>
 
+namespace {
+	struct TextureVertex {
+		D3DXVECTOR3 p;
+		float rhw;
+		DWORD color;
+		D3DXVECTOR2 t;
+	};
+}
+
 Texture::Texture(std::string filePath, LPDIRECT3DDEVICE9 d3dDevice) :
 m_d3dTex(NULL), m_d3dDevice(d3dDevice)
 {
