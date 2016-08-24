@@ -45,6 +45,9 @@
     <ClCompile Include="Sound.cpp">
       <Filter>Source Files\hks</Filter>
     </ClCompile>
+    <ClCompile Include="Actors.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Actor.h">
@@ -93,6 +96,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Rect.h">
+      <Filter>Header Files\hks</Filter>
+    </ClInclude>
+    <ClInclude Include="Actors.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Easing.h">
+      <Filter>Header Files\hks</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector2.h">
       <Filter>Header Files\hks</Filter>
     </ClInclude>
   </ItemGroup>

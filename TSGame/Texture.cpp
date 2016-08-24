@@ -22,8 +22,8 @@ m_d3dTex(NULL), m_d3dDevice(d3dDevice)
 	//テクスチャのサイズを取得
 	D3DXIMAGE_INFO info;
 	D3DXGetImageInfoFromFile(filePath.c_str(), &info);
-	m_size.x = static_cast<float>(info.Width);
-	m_size.y = static_cast<float>(info.Height);
+	m_size.x = info.Width;
+	m_size.y = info.Height;
 }
 
 Texture::~Texture() {
@@ -31,11 +31,11 @@ Texture::~Texture() {
 		m_d3dTex->Release();
 }
 
-void Texture::draw(D3DXVECTOR2 pos, float rad, float scale, const D3DXCOLOR& color, bool mirror) {
+void Texture::draw(Vector2 pos, float rad, float scale, const D3DXCOLOR& color, bool mirror) {
 	draw({ 0.0f, 0.0f, 1.0f, 1.0f }, pos, rad, scale, color, mirror);
 }
 
-void Texture::drawFrame(int col, int row, int index, D3DXVECTOR2 pos, float rad, float scale, const D3DXCOLOR& color, bool mirror) {
+void Texture::drawFrame(int col, int row, int index, Vector2 pos, float rad, float scale, const D3DXCOLOR& color, bool mirror) {
 	RectF uvRect(0.0f, 0.0f, 1.0f / col, 1.0f / row);
 	index %= (col * row);
 	uvRect.x = uvRect.w * (index % col);
@@ -43,7 +43,7 @@ void Texture::drawFrame(int col, int row, int index, D3DXVECTOR2 pos, float rad,
 	draw(uvRect, pos, rad, scale, color, mirror);
 }
 
-void Texture::draw(RectF uvRect, D3DXVECTOR2 pos, float rad, float scale, const D3DXCOLOR& color, bool mirror) {
+void Texture::draw(RectF uvRect, Vector2 pos, float rad, float scale, const D3DXCOLOR& color, bool mirror) {
 	auto texSize = D3DXVECTOR2(m_size.x * uvRect.w, m_size.y * uvRect.h);
 	std::vector<TextureVertex> vtx {
 		{ { -texSize.x/2, -texSize.y/2, 0.0f }, 1.0f, color, { uvRect.x, uvRect.y } },

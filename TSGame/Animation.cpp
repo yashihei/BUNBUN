@@ -34,6 +34,6 @@ void Animation::addPattern(std::string alias, int startFrame, int endFrame) {
 	m_patterns[alias] = patternList;
 }
 
-void Animation::draw(D3DXVECTOR2 pos, float rad, float scale, const D3DXCOLOR& color, bool mirror) {
+void Animation::draw(Vector2 pos, float rad, float scale, const D3DXCOLOR& color, bool mirror) {
 	m_texture->draw(m_uvRect, pos, rad, scale, color, mirror);
 }

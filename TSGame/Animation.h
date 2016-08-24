@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <d3dx9.h>
 #include "Rect.h"
+#include "Vector2.h"
 
 class Texture;
 
@@ -17,7 +18,7 @@ public:
 	void changePattern(std::string alias) { m_currentPattern = alias; m_cnt1 = m_cnt2 = 0; }
 	void setInterval(int interval) { m_interval = interval; }
 	bool isPlaying(std::string alias) { return alias == m_currentPattern; }
-	void draw(D3DXVECTOR2 pos, float rad = 0.0f, float scale = 1.0f, const D3DXCOLOR& color = 0xFFFFFFFF, bool mirror = false);
+	void draw(Vector2 pos, float rad = 0.0f, float scale = 1.0f, const D3DXCOLOR& color = 0xFFFFFFFF, bool mirror = false);
 private:
 	void setRect();
 	std::shared_ptr<Texture> m_texture;

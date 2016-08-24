@@ -8,6 +8,7 @@
 #include <memory>
 #include <XInput.h>
 #include "Point.h"
+#include "Vector2.h"
 
 //TODO:–¼‘O‹óŠÔ‚ÅˆÍ‚Þ
 enum State {
@@ -75,8 +76,8 @@ public:
 	bool isClicked(Button button) { return m_state[button][Click]; }
 	bool isPressed(Button button) { return m_state[button][Press]; }
 	bool isReleased(Button button) { return m_state[button][Release]; }
-	D3DXVECTOR2 getLeftThumb();
-	D3DXVECTOR2 getRightThumb();
+	Vector2 getLeftThumb();
+	Vector2 getRightThumb();
 private:
 	static const int buttonNum = 14;
 	int m_index;

@@ -5,18 +5,20 @@
 #include <d3d9.h>
 #include <d3dx9.h>
 #include "Rect.h"
+#include "Vector2.h"
+#include "Point.h"
 
 class Texture {
 public:
 	Texture(std::string filePath, LPDIRECT3DDEVICE9 d3dDevice);
 	~Texture();
-	void draw(D3DXVECTOR2 pos, float rad = 0.0f, float scale = 1.0f, const D3DXCOLOR& color = 0xFFFFFFFF, bool mirror = false);
-	void draw(RectF uvRect, D3DXVECTOR2 pos, float rad = 0.0f, float scale = 1.0f, const D3DXCOLOR& color = 0xFFFFFFFF, bool mirror = false);
-	void drawFrame(int col, int row, int index, D3DXVECTOR2 pos, float rad = 0.0f, float scale = 1.0f, const D3DXCOLOR& color = 0xFFFFFFFF, bool mirror = false);
+	void draw(Vector2 pos, float rad = 0.0f, float scale = 1.0f, const D3DXCOLOR& color = 0xFFFFFFFF, bool mirror = false);
+	void draw(RectF uvRect, Vector2 pos, float rad = 0.0f, float scale = 1.0f, const D3DXCOLOR& color = 0xFFFFFFFF, bool mirror = false);
+	void drawFrame(int col, int row, int index, Vector2 pos, float rad = 0.0f, float scale = 1.0f, const D3DXCOLOR& color = 0xFFFFFFFF, bool mirror = false);
 private:
 	LPDIRECT3DDEVICE9 m_d3dDevice;
 	LPDIRECT3DTEXTURE9 m_d3dTex;
-	D3DXVECTOR2 m_size;
+	Point m_size;
 };
 
 class TextureManager {
