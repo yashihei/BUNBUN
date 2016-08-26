@@ -7,6 +7,7 @@ class TextureManager;
 class SoundManager;
 class InputManager;
 class FPSControler;
+class Random;
 
 class GameApp {
 public:
@@ -22,5 +23,6 @@ protected:
 	std::shared_ptr<SoundManager> m_soundManager;
 	std::shared_ptr<InputManager> m_inputManager;
 	std::shared_ptr<FPSControler> m_fpsControler;
+	std::shared_ptr<Random> m_random;
 	int m_frameCount;
 };

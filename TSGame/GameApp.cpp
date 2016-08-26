@@ -15,6 +15,7 @@ m_frameCount(0)
 	m_soundManager = std::make_shared<SoundManager>();
 	m_inputManager = std::make_shared<InputManager>(hWnd, hInstance);
 	m_fpsControler = std::make_shared<FPSControler>(60);
+	m_random = std::make_shared<Random>();
 }
 
 void GameApp::run() {
