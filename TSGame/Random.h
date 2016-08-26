@@ -30,6 +30,7 @@ public:
 	float nextPlusMinus(float n) {
 		return next(-n, n);
 	}
+	bool trueOrFalse() { return next(1) == 0 ? true : false; }
 private:
 	std::mt19937 mt;
 };

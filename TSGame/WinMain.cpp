@@ -9,7 +9,7 @@ bool registerMyClass(HINSTANCE hInstance);
 bool createWindow(HINSTANCE hInstance, int nCmdShow, HWND* hWnd, int width, int height, bool fullScreen);
 
 const TCHAR className[] = TEXT("MyWindow");
-const TCHAR titleName[] = TEXT("TitleText");
+const TCHAR titleName[] = TEXT("BUNBUN");
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {

@@ -32,7 +32,7 @@ struct Vector2
     }
 
     bool isZero() const {
-        return x == 0.0 && y == 0.0;
+        return x == 0 && y == 0;
     }
 
     static Vector2 fromAngle(float rad) {
@@ -41,7 +41,7 @@ struct Vector2
 
     float toAngle() const {
         if (isZero())
-            return 0.0f;
+            return 0;
         return std::atan2(y, x);
     }
 
