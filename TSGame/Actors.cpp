@@ -23,7 +23,7 @@ void Player::update() {
 }
 
 void Player::draw() {
-	Shape::drawCircle(m_d3dDevice, m_pos, 10.0f, D3DCOLOR_ARGB(122, 150, 150, 255));
+	Shape::drawCircle(m_d3dDevice, m_pos, 10.0f, Color(0.6f, 0.6f, 1.0f, 0.5f).toD3Dcolor());
 }
 
 Flail::Flail(std::shared_ptr<Player> player, LPDIRECT3DDEVICE9 d3dDevice) :
@@ -50,7 +50,7 @@ void Flail::draw() {
 	int cnt = 0;
 	for (auto& trail : m_trails) {
 		cnt++;
-		Shape::drawCircle(m_d3dDevice, trail, m_radius, D3DCOLOR_ARGB(155/cnt, 255, 255, 100));
+		Shape::drawCircle(m_d3dDevice, trail, m_radius, Color(1.0f, 1.0f, 0.4f, 0.6f / cnt).toD3Dcolor());
 	}
 }
 
@@ -74,12 +74,12 @@ void Enemy::update() {
 
 void Enemy::draw() {
 	if (m_start) {
-		Shape::drawNgon(m_d3dDevice, m_pos, 4, 20.0f/30 * m_frameCount, m_rad, D3DCOLOR_ARGB(122, 255, 100, 100));
+		Shape::drawNgon(m_d3dDevice, m_pos, 4, 20.0f/30 * m_frameCount, m_rad, Color(1.0f, 0.4f, 0.4f, 0.5f).toD3Dcolor());
 		return;
 	}
 
-	Shape::drawNgon(m_d3dDevice, m_pos, 4, 10.0f, m_rad, D3DCOLOR_ARGB(122, 255, 100, 100));
-	Shape::drawNgon(m_d3dDevice, m_pos, 4, 20.0f, m_rad, D3DCOLOR_ARGB(122, 255, 100, 100));
+	Shape::drawNgon(m_d3dDevice, m_pos, 4, 10.0f, m_rad, Color(1.0f, 0.4f, 0.4f, 0.5f).toD3Dcolor());
+	Shape::drawNgon(m_d3dDevice, m_pos, 4, 20.0f, m_rad, Color(1.0f, 0.4f, 0.4f, 0.5f).toD3Dcolor());
 }
 
 Effect::Effect(Vector2 pos, LPDIRECT3DDEVICE9 d3dDevice) :
@@ -93,5 +93,6 @@ void Effect::update() {
 }
 
 void Effect::draw() {
-	Shape::drawCircle(m_d3dDevice, m_pos, Easing::OutQuart(m_frameCount, 60, 0.0f, 50.0f), Color(1.0f, 1.0f, 1.0f, Easing::OutQuart(m_frameCount, 60, 1.0f, 0.0f)).toD3Dcolor());
+	const auto color = Color(1.0f, 1.0f, 1.0f, Easing::OutQuart(m_frameCount, 60, 1.0, 0.0)).toD3Dcolor();
+	Shape::drawCircle(m_d3dDevice, m_pos, Easing::OutQuart(m_frameCount, 60, 0.0, 50.0), color);
 }

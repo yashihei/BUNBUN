@@ -10,6 +10,7 @@
 #include "Font.h"
 #include "Actors.h"
 #include "Shape.h"
+#include "Color.h"
 
 TSGame::TSGame(HWND hWnd, HINSTANCE hInstance) :
 GameApp(hWnd, hInstance), m_score(0)
@@ -60,12 +61,12 @@ void TSGame::update() {
 
 void TSGame::draw() {
 	for (int i = 0; i < 16; i++)
-		Shape::drawLine(m_graphicDevice->getDevice(), { i*40.0f, 0.0f }, { i*40.0f, 480.0f }, 1.0f, D3DCOLOR_ARGB(32, 255, 255, 255));
+		Shape::drawLine(m_graphicDevice->getDevice(), { i*40.0f, 0.0f }, { i*40.0f, 480.0f }, 1.0f, Color(1.0f, 1.0f, 1.0f, 0.125f).toD3Dcolor());
 	for (int i = 0; i < 12; i++)
-		Shape::drawLine(m_graphicDevice->getDevice(), { 0.0f, i*40.0f }, { 640.f, i*40.0f }, 1.0f, D3DCOLOR_ARGB(32, 255, 255, 255));
+		Shape::drawLine(m_graphicDevice->getDevice(), { 0.0f, i*40.0f }, { 640.f, i*40.0f }, 1.0f, Color(1.0f, 1.0f, 1.0f, 0.125f).toD3Dcolor());
 	m_player->draw();
 	m_flail->draw();
 	m_enemies->draw();
 	m_effects->draw();
-	m_hudFont->drawStr("SCORE " + std::to_string(m_score), { 10, 10 }, D3DCOLOR_ARGB(255, 155, 255, 155));
+	m_hudFont->drawStr("SCORE " + std::to_string(m_score), { 10, 10 }, Color(0.6f, 1.0f, 0.6f, 1.0f).toD3Dcolor());
 }
