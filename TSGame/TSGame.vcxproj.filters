@@ -107,5 +107,8 @@
     <ClInclude Include="Vector2.h">
       <Filter>Header Files\hks</Filter>
     </ClInclude>
+    <ClInclude Include="Color.h">
+      <Filter>Header Files\hks</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

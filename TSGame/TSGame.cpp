@@ -17,6 +17,7 @@ GameApp(hWnd, hInstance), m_score(0)
 	m_player = std::make_shared<Player>(m_inputManager, m_graphicDevice->getDevice());
 	m_flail = std::make_shared<Flail>(m_player, m_graphicDevice->getDevice());
 	m_enemies = std::make_shared<ActorManager<Enemy>>();
+	m_effects = std::make_shared<ActorManager<Effect>>();
 	
 	Font::addFont("dat/orbitron-medium.otf");
 	m_hudFont = std::make_shared<Font>(20, "Orbitron", false, m_graphicDevice->getDevice());
@@ -30,18 +31,29 @@ bool isHit(Vector2 pos1, Vector2 pos2, float radius1, float radius2) {
 
 void TSGame::update() {
 	if (m_random->next(60) == 0) {
-		auto enemy = std::make_shared<Enemy>(Vector2(m_random->next(640.0f), m_random->next(480.0f)), m_player, m_graphicDevice->getDevice());
+		//プレイヤーから離れた場所に出現させる
+		Vector2 pos;
+		while (true) {
+			pos = Vector2(m_random->next(640.0f), m_random->next(480.0f));
+			auto dis = pos - m_player->getPos();
+			if (std::abs(dis.length()) > 100)
+				break;
+		}
+		auto enemy = std::make_shared<Enemy>(pos, m_player, m_graphicDevice->getDevice());
 		m_enemies->add(enemy);
 	}
 	m_player->update();
 	m_flail->update();
 	m_enemies->update();
+	m_effects->update();
 
 	for (auto& enemy : *m_enemies) {
 		//if (isHit(enemy->getPos(), m_player->getPos(), 15.0f, 10.0f))
 		if (!enemy->start() && isHit(enemy->getPos(), m_flail->getPos(), 15.0f, m_flail->getRadius())) {
 			enemy->kill();
 			m_score += 100;
+			auto effect = std::make_shared<Effect>(enemy->getPos(), m_graphicDevice->getDevice());
+			m_effects->add(effect);
 		}
 	}
 }
@@ -54,5 +66,6 @@ void TSGame::draw() {
 	m_player->draw();
 	m_flail->draw();
 	m_enemies->draw();
+	m_effects->draw();
 	m_hudFont->drawStr("SCORE " + std::to_string(m_score), { 10, 10 }, D3DCOLOR_ARGB(255, 155, 255, 155));
 }

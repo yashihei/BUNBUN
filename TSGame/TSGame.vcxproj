@@ -87,6 +87,7 @@
     <ClInclude Include="Actor.h" />
     <ClInclude Include="Actors.h" />
     <ClInclude Include="Animation.h" />
+    <ClInclude Include="Color.h" />
     <ClInclude Include="Easing.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="FPS.h" />

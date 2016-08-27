@@ -2,7 +2,7 @@
 #include <d3dx9.h>
 
 struct Color {
-	Color(float r_ = 0.0f, float g_ = 0.0f, float b_ = 0.0f, float a_ = 0.0f) : a(a_), r(r_), g(g_), b(b_) {}
+	Color(float r_ = 1.0f, float g_ = 1.0f, float b_ = 1.0f, float a_ = 1.0f) : a(a_), r(r_), g(g_), b(b_) {}
 	float a, r, g, b;
 
 	D3DCOLOR toD3Dcolor() {
@@ -19,7 +19,7 @@ struct HSV {
 	float h;// ... 0Åã==0.0f, 360Åã==1.0f ...
 	float s, v;// [0.0f, 1.0f]
 
-	Color toColor(float alpha) {
+	Color toColor(float alpha = 1.0f) {
 		const float h_ = h - floor(h);
 		const float s_ = s;
 		const float v_ = v;

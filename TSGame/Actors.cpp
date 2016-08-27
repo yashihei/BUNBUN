@@ -4,6 +4,8 @@
 #include "Graphic.h"
 #include "Shape.h"
 #include "Util.h"
+#include "Color.h"
+#include "Easing.h"
 
 Player::Player(std::shared_ptr<InputManager> inputManager, LPDIRECT3DDEVICE9 d3dDevice) :
 m_inputManager(inputManager), m_d3dDevice(d3dDevice),
@@ -72,17 +74,24 @@ void Enemy::update() {
 
 void Enemy::draw() {
 	if (m_start) {
-		Shape::drawNgon(m_d3dDevice, m_pos, 6, 20.0f/30 * m_frameCount, m_rad, D3DCOLOR_ARGB(122, 255, 100, 100));
+		Shape::drawNgon(m_d3dDevice, m_pos, 4, 20.0f/30 * m_frameCount, m_rad, D3DCOLOR_ARGB(122, 255, 100, 100));
 		return;
 	}
 
-	Shape::drawNgon(m_d3dDevice, m_pos, 6, 10.0f, m_rad, D3DCOLOR_ARGB(122, 255, 100, 100));
-	Shape::drawNgon(m_d3dDevice, m_pos, 6, 20.0f, m_rad, D3DCOLOR_ARGB(122, 255, 100, 100));
+	Shape::drawNgon(m_d3dDevice, m_pos, 4, 10.0f, m_rad, D3DCOLOR_ARGB(122, 255, 100, 100));
+	Shape::drawNgon(m_d3dDevice, m_pos, 4, 20.0f, m_rad, D3DCOLOR_ARGB(122, 255, 100, 100));
 }
 
-
-Effect::Effect(Vector2 pos, LPDIRECT3DDEVICE9 d3dDevice) {
-}
+Effect::Effect(Vector2 pos, LPDIRECT3DDEVICE9 d3dDevice) :
+m_d3dDevice(d3dDevice), m_pos(pos), m_frameCount(0)
+{}
 
 void Effect::update() {
+	m_frameCount++;
+	if (m_frameCount > 60)
+		kill();
+}
+
+void Effect::draw() {
+	Shape::drawCircle(m_d3dDevice, m_pos, Easing::OutQuart(m_frameCount, 60, 0.0f, 50.0f), Color(1.0f, 1.0f, 1.0f, Easing::OutQuart(m_frameCount, 60, 1.0f, 0.0f)).toD3Dcolor());
 }
