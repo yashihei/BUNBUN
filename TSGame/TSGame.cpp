@@ -12,11 +12,14 @@
 #include "Shape.h"
 
 TSGame::TSGame(HWND hWnd, HINSTANCE hInstance) :
-GameApp(hWnd, hInstance) 
+GameApp(hWnd, hInstance), m_score(0)
 {
 	m_player = std::make_shared<Player>(m_inputManager, m_graphicDevice->getDevice());
 	m_flail = std::make_shared<Flail>(m_player, m_graphicDevice->getDevice());
 	m_enemies = std::make_shared<ActorManager<Enemy>>();
+	
+	Font::addFont("dat/orbitron-medium.otf");
+	m_hudFont = std::make_shared<Font>(20, "Orbitron", false, m_graphicDevice->getDevice());
 }
 
 bool isHit(Vector2 pos1, Vector2 pos2, float radius1, float radius2) {
@@ -35,8 +38,11 @@ void TSGame::update() {
 	m_enemies->update();
 
 	for (auto& enemy : *m_enemies) {
-		if (isHit(enemy->getPos(), m_flail->getPos(), 20.f, m_flail->getRadius() - 5))
+		//if (isHit(enemy->getPos(), m_player->getPos(), 15.0f, 10.0f))
+		if (isHit(enemy->getPos(), m_flail->getPos(), 15.0f, m_flail->getRadius())) {
 			enemy->kill();
+			m_score += 100;
+		}
 	}
 }
 
@@ -48,4 +54,5 @@ void TSGame::draw() {
 	m_player->draw();
 	m_flail->draw();
 	m_enemies->draw();
+	m_hudFont->drawStr("SCORE " + std::to_string(m_score), { 10, 10 }, D3DCOLOR_ARGB(255, 155, 255, 155));
 }
