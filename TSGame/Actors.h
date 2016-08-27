@@ -10,12 +10,15 @@ public:
 	Player(std::shared_ptr<InputManager> inputManager, LPDIRECT3DDEVICE9 d3dDevice);
 	void update();
 	void draw();
+	void clash();
+	bool muteki() const { return m_mutekiCount > 0 ? true : false; }
 	Vector2 getPos() const { return m_pos; }
+	int getLife() const { return m_life; }
 private:
 	std::shared_ptr<InputManager> m_inputManager;
 	LPDIRECT3DDEVICE9 m_d3dDevice;
 	Vector2 m_pos;
-	int m_frameCount, m_life;
+	int m_frameCount, m_mutekiCount, m_life;
 };
 
 class Flail {
