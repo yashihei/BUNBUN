@@ -35,10 +35,10 @@ void Flail::update() {
 	m_vec *= 0.98f;
 	m_pos += m_vec;
 
-	m_radius = dis.length() / 5.0f + 5;
+	m_radius = dis.length() / 7.0f + 5;
 
 	m_trails.push_front(m_pos);
-	if (m_trails.size() > 3)
+	if (m_trails.size() > 5)
 		m_trails.pop_back();
 }
 
@@ -48,21 +48,41 @@ void Flail::draw() {
 	int cnt = 0;
 	for (auto& trail : m_trails) {
 		cnt++;
-		Shape::drawCircle(m_d3dDevice, trail, m_radius, D3DCOLOR_ARGB(122/cnt, 255, 255, 100));
+		Shape::drawCircle(m_d3dDevice, trail, m_radius, D3DCOLOR_ARGB(155/cnt, 255, 255, 100));
 	}
 }
 
 Enemy::Enemy(Vector2 pos, std::shared_ptr<Player> player, LPDIRECT3DDEVICE9 d3dDevice) :
 m_player(player), m_d3dDevice(d3dDevice),
-m_pos(pos), m_rad(0)
+m_pos(pos), m_rad(0), m_frameCount(0), m_start(true)
 {}
 
 void Enemy::update() {
+	m_frameCount++;
+	if (m_start) {
+		if (m_frameCount > 30)
+			m_start = false;
+		return;
+	}
+
 	auto dis = m_player->getPos() - m_pos;
 	m_pos += Vector2::fromAngle(std::atan2(dis.y, dis.x)) * 1.5f;
-	m_rad += 0.1f;
+	m_rad += 0.05f;
 }
 
 void Enemy::draw() {
+	if (m_start) {
+		Shape::drawNgon(m_d3dDevice, m_pos, 6, 20.0f/30 * m_frameCount, m_rad, D3DCOLOR_ARGB(122, 255, 100, 100));
+		return;
+	}
+
+	Shape::drawNgon(m_d3dDevice, m_pos, 6, 10.0f, m_rad, D3DCOLOR_ARGB(122, 255, 100, 100));
 	Shape::drawNgon(m_d3dDevice, m_pos, 6, 20.0f, m_rad, D3DCOLOR_ARGB(122, 255, 100, 100));
+}
+
+
+Effect::Effect(Vector2 pos, LPDIRECT3DDEVICE9 d3dDevice) {
+}
+
+void Effect::update() {
 }

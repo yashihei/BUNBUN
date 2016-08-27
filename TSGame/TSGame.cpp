@@ -39,7 +39,7 @@ void TSGame::update() {
 
 	for (auto& enemy : *m_enemies) {
 		//if (isHit(enemy->getPos(), m_player->getPos(), 15.0f, 10.0f))
-		if (isHit(enemy->getPos(), m_flail->getPos(), 15.0f, m_flail->getRadius())) {
+		if (!enemy->start() && isHit(enemy->getPos(), m_flail->getPos(), 15.0f, m_flail->getRadius())) {
 			enemy->kill();
 			m_score += 100;
 		}

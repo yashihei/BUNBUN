@@ -15,7 +15,7 @@ private:
 	std::shared_ptr<InputManager> m_inputManager;
 	LPDIRECT3DDEVICE9 m_d3dDevice;
 	Vector2 m_pos;
-	int m_frameCount;
+	int m_frameCount, m_life;
 };
 
 class Flail {
@@ -39,10 +39,23 @@ public:
 	void update() override;
 	void draw() override;
 	Vector2 getPos() const { return m_pos; }
-	float getRadius() const { return m_radius; }
+	bool start() const { return m_start; }
 private:
 	std::shared_ptr<Player> m_player;
 	LPDIRECT3DDEVICE9 m_d3dDevice;
 	Vector2 m_pos;
 	float m_rad;
+	int m_frameCount;
+	bool m_start;
+};
+
+class Effect : public Actor {
+public:
+	Effect(Vector2 pos, LPDIRECT3DDEVICE9 d3dDevice);
+	void update() override;
+	void draw() override;
+private:
+	LPDIRECT3DDEVICE9 m_d3dDevice;
+	Vector2 m_pos;
+	int m_frameCount;
 };
