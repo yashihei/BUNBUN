@@ -25,7 +25,7 @@ public:
 
 	static void addFont(std::string filePath) {
 		if (AddFontResourceEx(filePath.c_str(), FR_PRIVATE, NULL) == 0) {
-			throw std::runtime_error("Failed load" + filePath);
+			throw std::runtime_error("Failed load " + filePath);
 		}
 	}
 private:

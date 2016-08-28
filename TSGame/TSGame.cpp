@@ -18,6 +18,7 @@ GameApp(hWnd, hInstance), m_score(0)
 	m_player = std::make_shared<Player>(m_inputManager, m_graphicDevice->getDevice());
 	m_flail = std::make_shared<Flail>(m_player, m_graphicDevice->getDevice());
 	m_enemies = std::make_shared<ActorManager<Enemy>>();
+	m_bullets = std::make_shared<ActorManager<Bullet>>();
 	m_effects = std::make_shared<ActorManager<Effect>>();
 	
 	Font::addFont("dat/orbitron-medium.otf");
@@ -31,7 +32,7 @@ bool isHit(Vector2 pos1, Vector2 pos2, float radius1, float radius2) {
 }
 
 void TSGame::update() {
-	if (m_random->next(30) == 0) {
+	if (m_random->next(60) == 0) {
 		//プレイヤーから離れた場所に出現させる
 		Vector2 pos;
 		while (true) {
@@ -46,6 +47,7 @@ void TSGame::update() {
 	m_player->update();
 	m_flail->update();
 	m_enemies->update();
+	m_bullets->update();
 	m_effects->update();
 
 	//enemy vs flail
@@ -55,12 +57,25 @@ void TSGame::update() {
 			enemy->kill();
 			auto effect = std::make_shared<Effect>(enemy->getPos(), m_graphicDevice->getDevice());
 			m_effects->add(effect);
+			//enemy shot
+			auto dis = m_player->getPos() - enemy->getPos();
+			auto vec = Vector2::fromAngle(std::atan2(dis.y, dis.x)) * 2.5f;
+			auto bullet = std::make_shared<Bullet>(enemy->getPos(), vec, m_graphicDevice->getDevice());
+			m_bullets->add(bullet);
 		}
 	}
 	//enemy vs player
 	bool allclean = false;
 	for (auto& enemy : *m_enemies) {
-		if (!m_player->muteki() && isHit(enemy->getPos(), m_player->getPos(), 15.0f, 10.0f)) {
+		if (!m_player->muteki() && isHit(enemy->getPos(), m_player->getPos(), 10.0f, 10.0f)) {
+			allclean = true;
+			m_player->clash();
+			break;
+		}
+	}
+	//bullet vs player
+	for (auto& bullet : *m_bullets) {
+		if (!m_player->muteki() && isHit(bullet->getPos(), m_player->getPos(), 5.0f, 10.0f)) {
 			allclean = true;
 			m_player->clash();
 			break;
@@ -72,6 +87,7 @@ void TSGame::update() {
 			auto effect = std::make_shared<Effect>(enemy->getPos(), m_graphicDevice->getDevice());
 			m_effects->add(effect);
 		}
+		m_bullets->clear();
 	}
 }
 
@@ -85,6 +101,7 @@ void TSGame::draw() {
 	m_player->draw();
 	m_flail->draw();
 	m_enemies->draw();
+	m_bullets->draw();
 	m_effects->draw();
 
 	//draw hud

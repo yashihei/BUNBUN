@@ -52,6 +52,18 @@ private:
 	bool m_start;
 };
 
+class Bullet : public Actor {
+public:
+	Bullet(Vector2 pos, Vector2 vec, LPDIRECT3DDEVICE9 d3dDevice);
+	void update() override;
+	void draw() override;
+	Vector2 getPos() const { return m_pos; }
+private:
+	LPDIRECT3DDEVICE9 m_d3dDevice;
+	Vector2 m_pos, m_vec;
+	int m_frameCount;
+};
+
 class Effect : public Actor {
 public:
 	Effect(Vector2 pos, LPDIRECT3DDEVICE9 d3dDevice);
