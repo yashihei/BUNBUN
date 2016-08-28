@@ -39,15 +39,16 @@ private:
 
 class Enemy : public Actor {
 public:
-	Enemy(Vector2 pos, std::shared_ptr<Player> player, LPDIRECT3DDEVICE9 d3dDevice);
+	Enemy(Vector2 pos, LPDIRECT3DDEVICE9 d3dDevice);
 	void update() override;
 	void draw() override;
 	Vector2 getPos() const { return m_pos; }
+	Color getColor() const { return m_color; }
 	bool start() const { return m_start; }
-private:
-	std::shared_ptr<Player> m_player;
+protected:
 	LPDIRECT3DDEVICE9 m_d3dDevice;
 	Vector2 m_pos;
+	Color m_color;
 	float m_rad;
 	int m_frameCount;
 	bool m_start;
@@ -55,7 +56,28 @@ private:
 
 class RedEnemy : public Enemy {
 public:
+	RedEnemy(Vector2 pos, std::shared_ptr<Player> player, LPDIRECT3DDEVICE9 d3dDevice);
+	void update() override;
 private:
+	std::shared_ptr<Player> m_player;
+};
+
+class Bullet;
+class OrangeEnemy : public Enemy {
+public:
+	OrangeEnemy(Vector2 pos, std::shared_ptr<Player> player, std::shared_ptr<ActorManager<Bullet>> bullets, LPDIRECT3DDEVICE9 d3dDevice);
+	void update() override;
+private:
+	std::shared_ptr<Player> m_player;
+	std::shared_ptr<ActorManager<Bullet>> m_bullets;
+};
+
+class MiddleEnemy : public Enemy {
+public:
+	MiddleEnemy(Vector2 pos, std::shared_ptr<Player> player, LPDIRECT3DDEVICE9 d3dDevice);
+	void update() override;
+private:
+	std::shared_ptr<Player> m_player;
 };
 
 class Bullet : public Actor {

@@ -40,7 +40,7 @@ void TSGame::update() {
 
 	if (m_frameCount % 900 == 0)
 		m_level = std::min(m_level + 1, 10);
-	if (m_random->next(150 - m_level * 10) == 0) {
+	if (m_random->next(100 - m_level * 5) == 0) {
 		//プレイヤーから離れた場所に出現させる
 		Vector2 pos;
 		while (true) {
@@ -49,18 +49,23 @@ void TSGame::update() {
 			if (std::abs(dis.length()) > 125)
 				break;
 		}
-		auto enemy = std::make_shared<Enemy>(pos, m_player, m_graphicDevice->getDevice());
-		m_enemies->add(enemy);
+		if (m_random->next(3) == 0) {
+			auto enemy = std::make_shared<OrangeEnemy>(pos, m_player, m_bullets, m_graphicDevice->getDevice());
+			m_enemies->add(enemy);
+		} else {
+			auto enemy = std::make_shared<RedEnemy>(pos, m_player,  m_graphicDevice->getDevice());
+			m_enemies->add(enemy);
+		}
 	}
 	//enemy vs flail
 	for (auto& enemy : *m_enemies) {
 		if (!enemy->start() && isHit(enemy->getPos(), m_flail->getPos(), 15.0f, m_flail->getRadius())) {
 			m_score += 100;
 			enemy->kill();
-			auto effect = std::make_shared<Effect>(enemy->getPos(), Color(), m_graphicDevice->getDevice());
+			auto effect = std::make_shared<Effect>(enemy->getPos(), enemy->getColor(), m_graphicDevice->getDevice());
 			m_effects->add(effect);
 			//enemy shot
-			if (m_level >= 5) {
+			if (m_level == 10) {
 				auto dis = m_player->getPos() - enemy->getPos();
 				auto vec = Vector2::fromAngle(std::atan2(dis.y, dis.x)) * 2.5f;
 				auto bullet = std::make_shared<Bullet>(enemy->getPos(), vec, m_graphicDevice->getDevice());
@@ -88,7 +93,7 @@ void TSGame::update() {
 	if (allclean) {
 		for (auto& enemy : *m_enemies) {
 			enemy->kill();
-			auto effect = std::make_shared<Effect>(enemy->getPos(), Color(), m_graphicDevice->getDevice());
+			auto effect = std::make_shared<Effect>(enemy->getPos(), enemy->getColor(), m_graphicDevice->getDevice());
 			m_effects->add(effect);
 		}
 		m_bullets->clear();

@@ -45,8 +45,8 @@ void Flail::update() {
 	m_vec *= 0.98f;
 	m_pos += m_vec;
 
-	//m_radius = dis.length() / 8.0f + 5;
-	m_radius = 20.f;
+	m_radius = dis.length() / 8.0f + 5;
+	//m_radius = 20.f;
 
 	m_trails.push_front(m_pos);
 	if (m_trails.size() > 5)
@@ -61,11 +61,12 @@ void Flail::draw() {
 		cnt++;
 		Shape::drawCircle(m_d3dDevice, trail, m_radius, Color(1.0f, 1.0f, 0.4f, 0.6f / cnt).toD3Dcolor());
 	}
+	//Shape::drawCircle(m_d3dDevice, m_pos, m_radius/2, Color(1.0f, 1.0f, 1.0f, 0.75f).toD3Dcolor());
 }
 
-Enemy::Enemy(Vector2 pos, std::shared_ptr<Player> player, LPDIRECT3DDEVICE9 d3dDevice) :
-m_player(player), m_d3dDevice(d3dDevice),
-m_pos(pos), m_rad(0), m_frameCount(0), m_start(true)
+Enemy::Enemy(Vector2 pos, LPDIRECT3DDEVICE9 d3dDevice) :
+m_d3dDevice(d3dDevice),
+m_pos(pos), m_color(), m_rad(0), m_frameCount(0), m_start(true)
 {}
 
 void Enemy::update() {
@@ -75,20 +76,47 @@ void Enemy::update() {
 			m_start = false;
 		return;
 	}
-
-	auto dis = m_player->getPos() - m_pos;
-	m_pos += Vector2::fromAngle(std::atan2(dis.y, dis.x)) * 1.5f;
-	m_rad += 0.05f;
 }
 
 void Enemy::draw() {
 	if (m_start) {
-		Shape::drawNgon(m_d3dDevice, m_pos, 4, 20.0f/30 * m_frameCount, m_rad, Color(1.0f, 0.4f, 0.4f, 0.5f).toD3Dcolor());
+		Shape::drawNgon(m_d3dDevice, m_pos, 4, 20.0f/30 * m_frameCount, m_rad, m_color.toD3Dcolor());
 		return;
 	}
+	Shape::drawNgon(m_d3dDevice, m_pos, 4, 10.0f, m_rad, Color(1.0f, 1.0f, 1.0f, 0.5f).toD3Dcolor());
+	Shape::drawNgon(m_d3dDevice, m_pos, 4, 20.0f, m_rad, m_color.toD3Dcolor());
+}
 
-	Shape::drawNgon(m_d3dDevice, m_pos, 4, 10.0f, m_rad, Color(1.0f, 0.8f, 0.8f, 0.5f).toD3Dcolor());
-	Shape::drawNgon(m_d3dDevice, m_pos, 4, 20.0f, m_rad, Color(1.0f, 0.4f, 0.4f, 0.5f).toD3Dcolor());
+RedEnemy::RedEnemy(Vector2 pos, std::shared_ptr<Player> player, LPDIRECT3DDEVICE9 d3dDevice) :
+Enemy(pos, d3dDevice), m_player(player)
+{
+	m_color = Color(1.0f, 0.4f, 0.4f, 0.5f);
+}
+
+void RedEnemy::update() {
+	Enemy::update();
+	m_rad += 0.05f;
+	if (m_start) return;
+	auto dis = m_player->getPos() - m_pos;
+	m_pos += Vector2::fromAngle(dis.toAngle()) * 1.5f;
+}
+
+OrangeEnemy::OrangeEnemy(Vector2 pos, std::shared_ptr<Player> player, std::shared_ptr<ActorManager<Bullet>> bullets, LPDIRECT3DDEVICE9 d3dDevice) :
+Enemy(pos, d3dDevice), m_player(player), m_bullets(bullets)
+{
+	m_color = Color(1.0f, 0.5f, 0.0f, 0.5f);
+}
+
+void OrangeEnemy::update() {
+	Enemy::update();
+
+	if (m_frameCount % 180 == 0) {
+		auto dis = m_player->getPos() - m_pos;
+		auto vec = Vector2::fromAngle(dis.toAngle()) * 2.0f;
+		auto bullet = std::make_shared<Bullet>(m_pos, vec, m_d3dDevice);
+		m_bullets->add(bullet);
+	}
+	m_rad += 0.05f;
 }
 
 Bullet::Bullet(Vector2 pos, Vector2 vec, LPDIRECT3DDEVICE9 d3dDevice) :
@@ -119,5 +147,5 @@ void Effect::update() {
 
 void Effect::draw() {
 	m_color.a = Easing::OutQuart(m_frameCount, 60, 1.0, 0.0);
-	Shape::drawCircle(m_d3dDevice, m_pos, Easing::OutQuart(m_frameCount, 60, 0.0, 50.0), m_color.toD3Dcolor());
+	Shape::drawCircle(m_d3dDevice, m_pos, Easing::OutQuart(m_frameCount, 60, 0.0, 60.0), m_color.toD3Dcolor());
 }
