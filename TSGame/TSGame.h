@@ -1,4 +1,5 @@
 #pragma once
+#define NOMINMAX
 #include <memory>
 #include <d3dx9.h>
 #include "Actor.h"
@@ -24,5 +25,5 @@ private:
 	std::shared_ptr<ActorManager<Bullet>> m_bullets;
 	std::shared_ptr<ActorManager<Effect>> m_effects;
 	std::shared_ptr<Font> m_hudFont;
-	int m_score;
+	int m_score, m_level;
 };

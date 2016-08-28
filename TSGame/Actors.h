@@ -4,6 +4,7 @@
 #include "TSGame.h"
 #include "Actor.h"
 #include "Vector2.h"
+#include "Color.h"
 
 class Player {
 public:
@@ -52,6 +53,11 @@ private:
 	bool m_start;
 };
 
+class RedEnemy : public Enemy {
+public:
+private:
+};
+
 class Bullet : public Actor {
 public:
 	Bullet(Vector2 pos, Vector2 vec, LPDIRECT3DDEVICE9 d3dDevice);
@@ -66,11 +72,12 @@ private:
 
 class Effect : public Actor {
 public:
-	Effect(Vector2 pos, LPDIRECT3DDEVICE9 d3dDevice);
+	Effect(Vector2 pos, Color color, LPDIRECT3DDEVICE9 d3dDevice);
 	void update() override;
 	void draw() override;
 private:
 	LPDIRECT3DDEVICE9 m_d3dDevice;
 	Vector2 m_pos;
+	Color m_color;
 	int m_frameCount;
 };

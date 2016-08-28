@@ -4,7 +4,6 @@
 #include "Graphic.h"
 #include "Shape.h"
 #include "Util.h"
-#include "Color.h"
 #include "Easing.h"
 
 Player::Player(std::shared_ptr<InputManager> inputManager, LPDIRECT3DDEVICE9 d3dDevice) :
@@ -46,7 +45,8 @@ void Flail::update() {
 	m_vec *= 0.98f;
 	m_pos += m_vec;
 
-	m_radius = dis.length() / 8.0f + 5;
+	//m_radius = dis.length() / 8.0f + 5;
+	m_radius = 20.f;
 
 	m_trails.push_front(m_pos);
 	if (m_trails.size() > 5)
@@ -99,14 +99,16 @@ m_pos(pos), m_vec(vec), m_frameCount(0)
 void Bullet::update() {
 	m_frameCount++;
 	m_pos += m_vec;
+	if (m_pos.x < 0 || m_pos.x > 640 || m_pos.y < 0 || m_pos.y > 480)
+		kill();
 }
 
 void Bullet::draw() {
 	Shape::drawCircle(m_d3dDevice, m_pos, 5.0f, Color(1.0f, 1.0f, 1.0f, 0.75f).toD3Dcolor());
 }
 
-Effect::Effect(Vector2 pos, LPDIRECT3DDEVICE9 d3dDevice) :
-m_d3dDevice(d3dDevice), m_pos(pos), m_frameCount(0)
+Effect::Effect(Vector2 pos, Color color, LPDIRECT3DDEVICE9 d3dDevice) :
+m_d3dDevice(d3dDevice), m_pos(pos), m_color(color), m_frameCount(0)
 {}
 
 void Effect::update() {
@@ -116,6 +118,6 @@ void Effect::update() {
 }
 
 void Effect::draw() {
-	const auto color = Color(1.0f, 1.0f, 1.0f, Easing::OutQuart(m_frameCount, 60, 1.0, 0.0)).toD3Dcolor();
-	Shape::drawCircle(m_d3dDevice, m_pos, Easing::OutQuart(m_frameCount, 60, 0.0, 50.0), color);
+	m_color.a = Easing::OutQuart(m_frameCount, 60, 1.0, 0.0);
+	Shape::drawCircle(m_d3dDevice, m_pos, Easing::OutQuart(m_frameCount, 60, 0.0, 50.0), m_color.toD3Dcolor());
 }

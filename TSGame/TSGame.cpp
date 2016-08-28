@@ -13,7 +13,7 @@
 #include "Color.h"
 
 TSGame::TSGame(HWND hWnd, HINSTANCE hInstance) :
-GameApp(hWnd, hInstance), m_score(0)
+GameApp(hWnd, hInstance), m_score(0), m_level(1)
 {
 	m_player = std::make_shared<Player>(m_inputManager, m_graphicDevice->getDevice());
 	m_flail = std::make_shared<Flail>(m_player, m_graphicDevice->getDevice());
@@ -32,7 +32,15 @@ bool isHit(Vector2 pos1, Vector2 pos2, float radius1, float radius2) {
 }
 
 void TSGame::update() {
-	if (m_random->next(60) == 0) {
+	m_player->update();
+	m_flail->update();
+	m_enemies->update();
+	m_bullets->update();
+	m_effects->update();
+
+	if (m_frameCount % 900 == 0)
+		m_level = std::min(m_level + 1, 10);
+	if (m_random->next(150 - m_level * 10) == 0) {
 		//プレイヤーから離れた場所に出現させる
 		Vector2 pos;
 		while (true) {
@@ -44,24 +52,20 @@ void TSGame::update() {
 		auto enemy = std::make_shared<Enemy>(pos, m_player, m_graphicDevice->getDevice());
 		m_enemies->add(enemy);
 	}
-	m_player->update();
-	m_flail->update();
-	m_enemies->update();
-	m_bullets->update();
-	m_effects->update();
-
 	//enemy vs flail
 	for (auto& enemy : *m_enemies) {
 		if (!enemy->start() && isHit(enemy->getPos(), m_flail->getPos(), 15.0f, m_flail->getRadius())) {
 			m_score += 100;
 			enemy->kill();
-			auto effect = std::make_shared<Effect>(enemy->getPos(), m_graphicDevice->getDevice());
+			auto effect = std::make_shared<Effect>(enemy->getPos(), Color(), m_graphicDevice->getDevice());
 			m_effects->add(effect);
 			//enemy shot
-			auto dis = m_player->getPos() - enemy->getPos();
-			auto vec = Vector2::fromAngle(std::atan2(dis.y, dis.x)) * 2.5f;
-			auto bullet = std::make_shared<Bullet>(enemy->getPos(), vec, m_graphicDevice->getDevice());
-			m_bullets->add(bullet);
+			if (m_level >= 5) {
+				auto dis = m_player->getPos() - enemy->getPos();
+				auto vec = Vector2::fromAngle(std::atan2(dis.y, dis.x)) * 2.5f;
+				auto bullet = std::make_shared<Bullet>(enemy->getPos(), vec, m_graphicDevice->getDevice());
+				m_bullets->add(bullet);
+			}
 		}
 	}
 	//enemy vs player
@@ -84,7 +88,7 @@ void TSGame::update() {
 	if (allclean) {
 		for (auto& enemy : *m_enemies) {
 			enemy->kill();
-			auto effect = std::make_shared<Effect>(enemy->getPos(), m_graphicDevice->getDevice());
+			auto effect = std::make_shared<Effect>(enemy->getPos(), Color(), m_graphicDevice->getDevice());
 			m_effects->add(effect);
 		}
 		m_bullets->clear();
@@ -98,8 +102,8 @@ void TSGame::draw() {
 	for (int i = 0; i < 12; i++)
 		Shape::drawLine(m_graphicDevice->getDevice(), { 0.0f, i*40.0f }, { 640.f, i*40.0f }, 1.0f, Color(1.0f, 1.0f, 1.0f, 0.125f).toD3Dcolor());
 
-	m_player->draw();
 	m_flail->draw();
+	m_player->draw();
 	m_enemies->draw();
 	m_bullets->draw();
 	m_effects->draw();
@@ -108,4 +112,5 @@ void TSGame::draw() {
 	m_hudFont->drawStr("SCORE " + std::to_string(m_score), { 10, 10 }, Color(0.6f, 1.0f, 0.6f, 1.0f).toD3Dcolor());
 	m_hudFont->drawStr("LIFE", { 10, 30 }, Color(0.6f, 1.0f, 0.6f, 1.0f).toD3Dcolor());
 	m_hudFont->drawStr(std::to_string(m_player->getLife()), { 60, 30 }, Color(1.0f, 0.6f, 0.6f, 1.0f).toD3Dcolor());
+	m_hudFont->drawStr("LEVEL " + std::to_string(m_level), { 640 - 100, 10 }, Color(0.6f, 1.0f, 0.6f, 1.0f).toD3Dcolor());
 }
