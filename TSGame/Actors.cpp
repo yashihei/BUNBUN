@@ -45,8 +45,8 @@ void Flail::update() {
 	m_vec *= 0.98f;
 	m_pos += m_vec;
 
-	m_radius = dis.length() / 8.0f + 5;
-	//m_radius = 20.f;
+	//m_radius = dis.length() / 8.0f + 5;
+	m_radius = 20.f;
 
 	m_trails.push_front(m_pos);
 	if (m_trails.size() > 5)
@@ -109,14 +109,16 @@ Enemy(pos, d3dDevice), m_player(player), m_bullets(bullets)
 
 void OrangeEnemy::update() {
 	Enemy::update();
+	m_rad += 0.05f;
+	if (m_start) return;
 
-	if (m_frameCount % 180 == 0) {
-		auto dis = m_player->getPos() - m_pos;
-		auto vec = Vector2::fromAngle(dis.toAngle()) * 2.0f;
+	auto dis = m_player->getPos() - m_pos;
+	if (m_frameCount % 120 == 0) {
+		auto vec = Vector2::fromAngle(dis.toAngle()) * 3.0f;
 		auto bullet = std::make_shared<Bullet>(m_pos, vec, m_d3dDevice);
 		m_bullets->add(bullet);
 	}
-	m_rad += 0.05f;
+	m_pos += Vector2::fromAngle(dis.toAngle()) * 1.0f;
 }
 
 Bullet::Bullet(Vector2 pos, Vector2 vec, LPDIRECT3DDEVICE9 d3dDevice) :

@@ -49,7 +49,7 @@ void TSGame::update() {
 			if (std::abs(dis.length()) > 125)
 				break;
 		}
-		if (m_random->next(3) == 0) {
+		if (m_random->next(5) == 0) {
 			auto enemy = std::make_shared<OrangeEnemy>(pos, m_player, m_bullets, m_graphicDevice->getDevice());
 			m_enemies->add(enemy);
 		} else {
