@@ -90,7 +90,7 @@ void TSGame::update() {
 	//enemy vs player
 	bool allclean = false;
 	for (auto& enemy : *m_enemies) {
-		if (!m_player->muteki() && isHit(enemy->getPos(), m_player->getPos(), 10.0f, 10.0f)) {
+		if (!m_player->muteki() && isHit(enemy->getPos(), m_player->getPos(), 10.0f, 5.0f)) {
 			allclean = true;
 			m_player->clash();
 			break;
@@ -98,7 +98,7 @@ void TSGame::update() {
 	}
 	//bullet vs player
 	for (auto& bullet : *m_bullets) {
-		if (!m_player->muteki() && isHit(bullet->getPos(), m_player->getPos(), 5.0f, 10.0f)) {
+		if (!m_player->muteki() && isHit(bullet->getPos(), m_player->getPos(), 5.0f, 5.0f)) {
 			allclean = true;
 			m_player->clash();
 			break;

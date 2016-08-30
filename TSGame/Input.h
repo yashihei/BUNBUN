@@ -78,6 +78,7 @@ public:
 	bool isReleased(Button button) { return m_state[button][Release]; }
 	Vector2 getLeftThumb();
 	Vector2 getRightThumb();
+	bool isConnecting();
 private:
 	static const int buttonNum = 14;
 	int m_index;

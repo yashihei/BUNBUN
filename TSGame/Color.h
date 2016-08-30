@@ -5,7 +5,7 @@ struct Color {
 	Color(float r_ = 1.0f, float g_ = 1.0f, float b_ = 1.0f, float a_ = 1.0f) : a(a_), r(r_), g(g_), b(b_) {}
 	float a, r, g, b;
 
-	D3DCOLOR toD3Dcolor() {
+	D3DCOLOR toD3Dcolor() const {
 		DWORD a_ = static_cast<DWORD>(a * 255) << 24;
 		DWORD r_ = static_cast<DWORD>(r * 255) << 16;
 		DWORD g_ = static_cast<DWORD>(g * 255) << 8;
@@ -19,7 +19,7 @@ struct HSV {
 	float h;// ... 0‹==0.0f, 360‹==1.0f ...
 	float s, v;// [0.0f, 1.0f]
 
-	Color toColor(float alpha = 1.0f) {
+	Color toColor(float alpha = 1.0f) const {
 		const float h_ = h - floor(h);
 		const float s_ = s;
 		const float v_ = v;

@@ -16,10 +16,13 @@ void Player::update() {
 	m_frameCount++;
 	m_mutekiCount--;
 
-	const Vector2 dir(m_inputManager->isPressedRight() - m_inputManager->isPressedLeft(), m_inputManager->isPressedDown() - m_inputManager->isPressedUp());
-	if (!dir.isZero())
-		m_pos += dir.normalized() * 5.0f;
-	//m_pos += m_inputManager->getXInput()->getLeftThumb() * 5.0f;
+	if (!m_inputManager->getXInput()->getLeftThumb().isZero()) {
+		m_pos += m_inputManager->getXInput()->getLeftThumb().normalized() * 5.0f;
+	} else {
+		const Vector2 dir(m_inputManager->isPressedRight() - m_inputManager->isPressedLeft(), m_inputManager->isPressedDown() - m_inputManager->isPressedUp());
+		if (!dir.isZero())
+			m_pos += dir.normalized() * 5.0f;
+	}
 	m_pos = Vector2(clamp(m_pos.x, 0.0f, 640.0f), clamp(m_pos.y, 0.0f, 480.0f));
 }
 
@@ -39,6 +42,7 @@ void Player::draw() {
 	if (m_mutekiCount > 0 && m_mutekiCount % 10 < 5)
 		color = Color(0.0f, 0.0f, 0.5f, 0.5f);
 	Shape::drawCircle(m_d3dDevice, m_pos, 10.0f, color.toD3Dcolor());
+	Shape::drawCircle(m_d3dDevice, m_pos, 5.0f, Color(0.7f, 0.7f, 1.0f, 0.5f).toD3Dcolor());
 }
 
 Flail::Flail(std::shared_ptr<Player> player, LPDIRECT3DDEVICE9 d3dDevice) :

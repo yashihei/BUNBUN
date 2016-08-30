@@ -150,6 +150,13 @@ Vector2 XInput::getRightThumb() {
 	return{ normalized(m_xInputState.Gamepad.sThumbRX), -normalized(m_xInputState.Gamepad.sThumbRY) };
 }
 
+bool XInput::isConnecting() {
+	auto res = XInputGetState(m_index, &m_xInputState);
+	if (res == ERROR_DEVICE_NOT_CONNECTED)
+		return false;
+	return true;
+}
+
 InputManager::InputManager(HWND hWnd, HINSTANCE hInstance) {
 	HRESULT hr = DirectInput8Create(hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&m_directInput, NULL);
 	if (FAILED(hr))
