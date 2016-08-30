@@ -24,6 +24,7 @@ private:
 	std::shared_ptr<ActorManager<Enemy>> m_enemies;
 	std::shared_ptr<ActorManager<Bullet>> m_bullets;
 	std::shared_ptr<ActorManager<Effect>> m_effects;
-	std::shared_ptr<Font> m_hudFont;
+	std::shared_ptr<Font> m_hudFont, m_titleFont;
 	int m_score, m_level;
+	bool m_gameover;
 };

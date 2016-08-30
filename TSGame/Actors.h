@@ -12,6 +12,7 @@ public:
 	void update();
 	void draw();
 	void clash();
+	void start();
 	bool muteki() const { return m_mutekiCount > 0 ? true : false; }
 	Vector2 getPos() const { return m_pos; }
 	int getLife() const { return m_life; }
@@ -44,14 +45,14 @@ public:
 	void draw() override;
 	Vector2 getPos() const { return m_pos; }
 	Color getColor() const { return m_color; }
-	bool start() const { return m_start; }
+	bool isBooting() const { return m_boot; }
 protected:
 	LPDIRECT3DDEVICE9 m_d3dDevice;
 	Vector2 m_pos;
 	Color m_color;
 	float m_rad;
 	int m_frameCount;
-	bool m_start;
+	bool m_boot;
 };
 
 class RedEnemy : public Enemy {

@@ -13,7 +13,7 @@
 #include "Color.h"
 
 TSGame::TSGame(HWND hWnd, HINSTANCE hInstance) :
-GameApp(hWnd, hInstance), m_score(0), m_level(1)
+GameApp(hWnd, hInstance), m_score(0), m_level(1), m_gameover(true)
 {
 	m_player = std::make_shared<Player>(m_inputManager, m_graphicDevice->getDevice());
 	m_flail = std::make_shared<Flail>(m_player, m_graphicDevice->getDevice());
@@ -23,6 +23,7 @@ GameApp(hWnd, hInstance), m_score(0), m_level(1)
 	
 	Font::addFont("dat/orbitron-medium.otf");
 	m_hudFont = std::make_shared<Font>(20, "Orbitron", false, m_graphicDevice->getDevice());
+	m_titleFont = std::make_shared<Font>(50, "Orbitron", false, m_graphicDevice->getDevice());
 }
 
 bool isHit(Vector2 pos1, Vector2 pos2, float radius1, float radius2) {
@@ -32,6 +33,19 @@ bool isHit(Vector2 pos1, Vector2 pos2, float radius1, float radius2) {
 }
 
 void TSGame::update() {
+	if (m_gameover) {
+		if (m_inputManager->isClickedButton1()) {
+			m_gameover = false;
+			m_level = 1;
+			m_score = 0;
+			m_player->start();
+			m_enemies->clear();
+			m_bullets->clear();
+			m_effects->clear();
+		}
+		return;
+	}
+
 	m_player->update();
 	m_flail->update();
 	m_enemies->update();
@@ -59,7 +73,7 @@ void TSGame::update() {
 	}
 	//enemy vs flail
 	for (auto& enemy : *m_enemies) {
-		if (!enemy->start() && isHit(enemy->getPos(), m_flail->getPos(), 15.0f, m_flail->getRadius())) {
+		if (!enemy->isBooting() && isHit(enemy->getPos(), m_flail->getPos(), 15.0f, m_flail->getRadius())) {
 			m_score += 100;
 			enemy->kill();
 			auto effect = std::make_shared<Effect>(enemy->getPos(), enemy->getColor(), m_graphicDevice->getDevice());
@@ -90,6 +104,8 @@ void TSGame::update() {
 			break;
 		}
 	}
+	if (m_player->getLife() == 0)
+		m_gameover = true;
 	if (allclean) {
 		for (auto& enemy : *m_enemies) {
 			enemy->kill();
@@ -101,6 +117,13 @@ void TSGame::update() {
 }
 
 void TSGame::draw() {
+	if (m_gameover) {
+		m_titleFont->drawStr("BUN BUN", { 10, 200 }, Color(1.0f, 0.5f, 0.0f, 0.8f).toD3Dcolor());
+		if (m_frameCount % 60 < 30) {
+			m_hudFont->drawStr("PUSH Z KEY TO START", { 10, 250 }, Color().toD3Dcolor());
+		}
+	}
+
 	//draw background
 	for (int i = 0; i < 16; i++)
 		Shape::drawLine(m_graphicDevice->getDevice(), { i*40.0f, 0.0f }, { i*40.0f, 480.0f }, 1.0f, Color(1.0f, 1.0f, 1.0f, 0.125f).toD3Dcolor());

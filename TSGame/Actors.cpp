@@ -19,12 +19,19 @@ void Player::update() {
 	const Vector2 dir(m_inputManager->isPressedRight() - m_inputManager->isPressedLeft(), m_inputManager->isPressedDown() - m_inputManager->isPressedUp());
 	if (!dir.isZero())
 		m_pos += dir.normalized() * 5.0f;
+	//m_pos += m_inputManager->getXInput()->getLeftThumb() * 5.0f;
 	m_pos = Vector2(clamp(m_pos.x, 0.0f, 640.0f), clamp(m_pos.y, 0.0f, 480.0f));
 }
 
 void Player::clash() {
 	m_mutekiCount = 180;
 	m_life--;
+}
+
+void Player::start() {
+	m_pos = Vector2(320, 240);
+	m_frameCount = m_mutekiCount = 0;
+	m_life = 3;
 }
 
 void Player::draw() {
@@ -36,7 +43,7 @@ void Player::draw() {
 
 Flail::Flail(std::shared_ptr<Player> player, LPDIRECT3DDEVICE9 d3dDevice) :
 m_player(player), m_d3dDevice(d3dDevice),
-m_pos(m_player->getPos()), m_vec(), m_radius(25.0f)
+m_pos(m_player->getPos()), m_vec(), m_radius(20.0f)
 {}
 
 void Flail::update() {
@@ -46,7 +53,6 @@ void Flail::update() {
 	m_pos += m_vec;
 
 	//m_radius = dis.length() / 8.0f + 5;
-	m_radius = 20.f;
 
 	m_trails.push_front(m_pos);
 	if (m_trails.size() > 5)
@@ -59,27 +65,27 @@ void Flail::draw() {
 	int cnt = 0;
 	for (auto& trail : m_trails) {
 		cnt++;
-		Shape::drawCircle(m_d3dDevice, trail, m_radius, Color(1.0f, 1.0f, 0.4f, 0.6f / cnt).toD3Dcolor());
+		Shape::drawCircle(m_d3dDevice, trail, m_radius - cnt, Color(1.0f, 1.0f, 0.4f, 0.6f / cnt).toD3Dcolor());
 	}
 	//Shape::drawCircle(m_d3dDevice, m_pos, m_radius/2, Color(1.0f, 1.0f, 1.0f, 0.75f).toD3Dcolor());
 }
 
 Enemy::Enemy(Vector2 pos, LPDIRECT3DDEVICE9 d3dDevice) :
 m_d3dDevice(d3dDevice),
-m_pos(pos), m_color(), m_rad(0), m_frameCount(0), m_start(true)
+m_pos(pos), m_color(), m_rad(0), m_frameCount(0), m_boot(true)
 {}
 
 void Enemy::update() {
 	m_frameCount++;
-	if (m_start) {
+	if (m_boot) {
 		if (m_frameCount > 30)
-			m_start = false;
+			m_boot = false;
 		return;
 	}
 }
 
 void Enemy::draw() {
-	if (m_start) {
+	if (m_boot) {
 		Shape::drawNgon(m_d3dDevice, m_pos, 4, 20.0f/30 * m_frameCount, m_rad, m_color.toD3Dcolor());
 		return;
 	}
@@ -96,7 +102,7 @@ Enemy(pos, d3dDevice), m_player(player)
 void RedEnemy::update() {
 	Enemy::update();
 	m_rad += 0.05f;
-	if (m_start) return;
+	if (m_boot) return;
 	auto dis = m_player->getPos() - m_pos;
 	m_pos += Vector2::fromAngle(dis.toAngle()) * 1.5f;
 }
@@ -110,7 +116,7 @@ Enemy(pos, d3dDevice), m_player(player), m_bullets(bullets)
 void OrangeEnemy::update() {
 	Enemy::update();
 	m_rad += 0.05f;
-	if (m_start) return;
+	if (m_boot) return;
 
 	auto dis = m_player->getPos() - m_pos;
 	if (m_frameCount % 120 == 0) {
