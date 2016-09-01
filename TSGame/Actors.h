@@ -12,7 +12,7 @@ public:
 	void update();
 	void draw();
 	void clash();
-	void start();
+	void init();
 	bool muteki() const { return m_mutekiCount > 0 ? true : false; }
 	Vector2 getPos() const { return m_pos; }
 	int getLife() const { return m_life; }
@@ -28,7 +28,9 @@ public:
 	Flail(std::shared_ptr<Player> player, LPDIRECT3DDEVICE9 d3dDevice);
 	void update();
 	void draw();
+	void init();
 	Vector2 getPos() const { return m_pos; }
+	Vector2 getVec() const { return m_vec; }
 	float getRadius() const { return m_radius; }
 private:
 	std::shared_ptr<Player> m_player;
@@ -43,15 +45,16 @@ public:
 	Enemy(Vector2 pos, LPDIRECT3DDEVICE9 d3dDevice);
 	void update() override;
 	void draw() override;
+	void blowOff(Vector2 vec);
 	Vector2 getPos() const { return m_pos; }
 	Color getColor() const { return m_color; }
 	bool isBooting() const { return m_boot; }
 protected:
 	LPDIRECT3DDEVICE9 m_d3dDevice;
-	Vector2 m_pos;
+	Vector2 m_pos, m_vec;
 	Color m_color;
 	float m_rad;
-	int m_frameCount;
+	int m_frameCount, m_disableCount;
 	bool m_boot;
 };
 
@@ -73,9 +76,17 @@ private:
 	std::shared_ptr<ActorManager<Bullet>> m_bullets;
 };
 
-class MiddleEnemy : public Enemy {
+class GreenEnemy : public Enemy {
 public:
-	MiddleEnemy(Vector2 pos, std::shared_ptr<Player> player, LPDIRECT3DDEVICE9 d3dDevice);
+	GreenEnemy(Vector2 pos, std::shared_ptr<Player> player, LPDIRECT3DDEVICE9 d3dDevice);
+	void update() override;
+private:
+	std::shared_ptr<Player> m_player;
+};
+
+class PurpleEnemy : public Enemy {
+public:
+	PurpleEnemy(Vector2 pos, std::shared_ptr<Player> player, LPDIRECT3DDEVICE9 d3dDevice);
 	void update() override;
 private:
 	std::shared_ptr<Player> m_player;
@@ -95,12 +106,13 @@ private:
 
 class Effect : public Actor {
 public:
-	Effect(Vector2 pos, Color color, LPDIRECT3DDEVICE9 d3dDevice);
+	Effect(Vector2 pos, Color color, float size, LPDIRECT3DDEVICE9 d3dDevice);
 	void update() override;
 	void draw() override;
 private:
 	LPDIRECT3DDEVICE9 m_d3dDevice;
 	Vector2 m_pos;
 	Color m_color;
+	float m_size;
 	int m_frameCount;
 };

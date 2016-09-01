@@ -38,7 +38,9 @@ void TSGame::update() {
 			m_gameover = false;
 			m_level = 1;
 			m_score = 0;
-			m_player->start();
+			m_frameCount = 0;
+			m_player->init();
+			m_flail->init();
 			m_enemies->clear();
 			m_bullets->clear();
 			m_effects->clear();
@@ -60,31 +62,35 @@ void TSGame::update() {
 		while (true) {
 			pos = Vector2(m_random->next(640.0f), m_random->next(480.0f));
 			auto dis = pos - m_player->getPos();
-			if (std::abs(dis.length()) > 125)
+			if (std::abs(dis.length()) > 100)
 				break;
 		}
-		if (m_random->next(5) == 0) {
+		float r = m_random->next(1.0f);
+		if (r < 0.05f) {
+			auto enemy = std::make_shared<GreenEnemy>(pos, m_player, m_graphicDevice->getDevice());
+			m_enemies->add(enemy);
+		} else if (r < 0.15f) {
 			auto enemy = std::make_shared<OrangeEnemy>(pos, m_player, m_bullets, m_graphicDevice->getDevice());
 			m_enemies->add(enemy);
 		} else {
-			auto enemy = std::make_shared<RedEnemy>(pos, m_player,  m_graphicDevice->getDevice());
+			auto enemy = std::make_shared<RedEnemy>(pos, m_player, m_graphicDevice->getDevice());
 			m_enemies->add(enemy);
 		}
 	}
 	//enemy vs flail
 	for (auto& enemy : *m_enemies) {
 		if (!enemy->isBooting() && isHit(enemy->getPos(), m_flail->getPos(), 15.0f, m_flail->getRadius())) {
+			auto dis = enemy->getPos() - m_player->getPos();
+			auto len = m_flail->getVec().length();
+			enemy->blowOff(dis.normalized() * len);
+		}
+		//hit wall?
+		auto pos = enemy->getPos();
+		if (pos.x < 0 || pos.x > 640 || pos.y < 0 || pos.y > 480) {
 			m_score += 100;
 			enemy->kill();
-			auto effect = std::make_shared<Effect>(enemy->getPos(), enemy->getColor(), m_graphicDevice->getDevice());
+			auto effect = std::make_shared<Effect>(enemy->getPos(), enemy->getColor(), 75.0f, m_graphicDevice->getDevice());
 			m_effects->add(effect);
-			//enemy shot
-			if (m_level == 10) {
-				auto dis = m_player->getPos() - enemy->getPos();
-				auto vec = Vector2::fromAngle(std::atan2(dis.y, dis.x)) * 2.5f;
-				auto bullet = std::make_shared<Bullet>(enemy->getPos(), vec, m_graphicDevice->getDevice());
-				m_bullets->add(bullet);
-			}
 		}
 	}
 	//enemy vs player
@@ -109,7 +115,7 @@ void TSGame::update() {
 	if (allclean) {
 		for (auto& enemy : *m_enemies) {
 			enemy->kill();
-			auto effect = std::make_shared<Effect>(enemy->getPos(), enemy->getColor(), m_graphicDevice->getDevice());
+			auto effect = std::make_shared<Effect>(enemy->getPos(), enemy->getColor(), 75.0f, m_graphicDevice->getDevice());
 			m_effects->add(effect);
 		}
 		m_bullets->clear();

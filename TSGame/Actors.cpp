@@ -31,7 +31,7 @@ void Player::clash() {
 	m_life--;
 }
 
-void Player::start() {
+void Player::init() {
 	m_pos = Vector2(320, 240);
 	m_frameCount = m_mutekiCount = 0;
 	m_life = 3;
@@ -47,16 +47,14 @@ void Player::draw() {
 
 Flail::Flail(std::shared_ptr<Player> player, LPDIRECT3DDEVICE9 d3dDevice) :
 m_player(player), m_d3dDevice(d3dDevice),
-m_pos(m_player->getPos()), m_vec(), m_radius(20.0f)
+m_pos(m_player->getPos()), m_vec(), m_radius(25.0f)
 {}
 
 void Flail::update() {
 	auto dis = m_player->getPos() - m_pos;
-	m_vec += dis / 70;
-	m_vec *= 0.98f;
+	m_vec += dis / 50;
+	m_vec *= 0.975f;
 	m_pos += m_vec;
-
-	//m_radius = dis.length() / 8.0f + 5;
 
 	m_trails.push_front(m_pos);
 	if (m_trails.size() > 5)
@@ -71,16 +69,23 @@ void Flail::draw() {
 		cnt++;
 		Shape::drawCircle(m_d3dDevice, trail, m_radius - cnt, Color(1.0f, 1.0f, 0.4f, 0.6f / cnt).toD3Dcolor());
 	}
-	//Shape::drawCircle(m_d3dDevice, m_pos, m_radius/2, Color(1.0f, 1.0f, 1.0f, 0.75f).toD3Dcolor());
+}
+
+void Flail::init() {
+	m_radius = 25.0f;
+	m_pos = m_player->getPos();
+	m_vec = Vector2();
 }
 
 Enemy::Enemy(Vector2 pos, LPDIRECT3DDEVICE9 d3dDevice) :
 m_d3dDevice(d3dDevice),
-m_pos(pos), m_color(), m_rad(0), m_frameCount(0), m_boot(true)
+m_pos(pos), m_vec(),
+m_color(), m_rad(0), m_frameCount(0), m_disableCount(0), m_boot(true)
 {}
 
 void Enemy::update() {
-	m_frameCount++;
+	m_frameCount++; m_disableCount--;
+	m_rad += 0.05f;
 	if (m_boot) {
 		if (m_frameCount > 30)
 			m_boot = false;
@@ -97,6 +102,12 @@ void Enemy::draw() {
 	Shape::drawNgon(m_d3dDevice, m_pos, 4, 20.0f, m_rad, m_color.toD3Dcolor());
 }
 
+void Enemy::blowOff(Vector2 vec) {
+	if (m_disableCount > 0) return;
+	m_disableCount = 10;
+	m_vec += vec;
+}
+
 RedEnemy::RedEnemy(Vector2 pos, std::shared_ptr<Player> player, LPDIRECT3DDEVICE9 d3dDevice) :
 Enemy(pos, d3dDevice), m_player(player)
 {
@@ -105,10 +116,11 @@ Enemy(pos, d3dDevice), m_player(player)
 
 void RedEnemy::update() {
 	Enemy::update();
-	m_rad += 0.05f;
 	if (m_boot) return;
+
 	auto dis = m_player->getPos() - m_pos;
-	m_pos += Vector2::fromAngle(dis.toAngle()) * 1.5f;
+	m_vec *= 0.97f;
+	m_pos += Vector2::fromAngle(dis.toAngle()) * 1.5f + m_vec;
 }
 
 OrangeEnemy::OrangeEnemy(Vector2 pos, std::shared_ptr<Player> player, std::shared_ptr<ActorManager<Bullet>> bullets, LPDIRECT3DDEVICE9 d3dDevice) :
@@ -119,7 +131,6 @@ Enemy(pos, d3dDevice), m_player(player), m_bullets(bullets)
 
 void OrangeEnemy::update() {
 	Enemy::update();
-	m_rad += 0.05f;
 	if (m_boot) return;
 
 	auto dis = m_player->getPos() - m_pos;
@@ -127,8 +138,28 @@ void OrangeEnemy::update() {
 		auto vec = Vector2::fromAngle(dis.toAngle()) * 3.0f;
 		auto bullet = std::make_shared<Bullet>(m_pos, vec, m_d3dDevice);
 		m_bullets->add(bullet);
+	} else if (m_frameCount % 120 < 90) {
+		m_pos += Vector2::fromAngle(dis.toAngle()) * 1.0f;
+	} else {
+		m_rad += 0.15f;
 	}
-	m_pos += Vector2::fromAngle(dis.toAngle()) * 1.0f;
+	m_vec *= 0.97f;
+	m_pos += m_vec;
+}
+
+GreenEnemy::GreenEnemy(Vector2 pos, std::shared_ptr<Player> player, LPDIRECT3DDEVICE9 d3dDevice) :
+Enemy(pos, d3dDevice), m_player(player)
+{
+	m_color = Color(0.5f, 1.0f, 0.5f, 0.5f);
+}
+
+void GreenEnemy::update() {
+	Enemy::update();
+	if (m_boot) return;
+
+	auto dis = m_player->getPos() - m_pos;
+	m_vec *= 0.95f;
+	m_pos += Vector2::fromAngle(dis.toAngle()) * 2.5f + m_vec;
 }
 
 Bullet::Bullet(Vector2 pos, Vector2 vec, LPDIRECT3DDEVICE9 d3dDevice) :
@@ -147,8 +178,8 @@ void Bullet::draw() {
 	Shape::drawCircle(m_d3dDevice, m_pos, 5.0f, Color(1.0f, 1.0f, 1.0f, 0.75f).toD3Dcolor());
 }
 
-Effect::Effect(Vector2 pos, Color color, LPDIRECT3DDEVICE9 d3dDevice) :
-m_d3dDevice(d3dDevice), m_pos(pos), m_color(color), m_frameCount(0)
+Effect::Effect(Vector2 pos, Color color, float size, LPDIRECT3DDEVICE9 d3dDevice) :
+m_d3dDevice(d3dDevice), m_pos(pos), m_color(color), m_size(size), m_frameCount(0)
 {}
 
 void Effect::update() {
@@ -158,6 +189,6 @@ void Effect::update() {
 }
 
 void Effect::draw() {
-	m_color.a = Easing::OutQuart(m_frameCount, 60, 1.0, 0.0);
-	Shape::drawCircle(m_d3dDevice, m_pos, Easing::OutQuart(m_frameCount, 60, 0.0, 60.0), m_color.toD3Dcolor());
+	m_color.a = Easing::OutQuint(m_frameCount, 60, 1.0, 0.0);
+	Shape::drawCircle(m_d3dDevice, m_pos, Easing::OutQuint(m_frameCount, 60, 0.0, m_size), m_color.toD3Dcolor());
 }
