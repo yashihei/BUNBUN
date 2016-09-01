@@ -80,11 +80,11 @@ void Flail::init() {
 Enemy::Enemy(Vector2 pos, LPDIRECT3DDEVICE9 d3dDevice) :
 m_d3dDevice(d3dDevice),
 m_pos(pos), m_vec(),
-m_color(), m_rad(0), m_frameCount(0), m_disableCount(0), m_boot(true)
+m_color(), m_rad(0), m_frameCount(0), m_damageCount(0), m_boot(true)
 {}
 
 void Enemy::update() {
-	m_frameCount++; m_disableCount--;
+	m_frameCount++; m_damageCount--;
 	m_rad += 0.05f;
 	if (m_boot) {
 		if (m_frameCount > 30)
@@ -95,16 +95,16 @@ void Enemy::update() {
 
 void Enemy::draw() {
 	if (m_boot) {
-		Shape::drawNgon(m_d3dDevice, m_pos, 4, 20.0f/30 * m_frameCount, m_rad, m_color.toD3Dcolor());
+		Shape::drawNgon(m_d3dDevice, m_pos, 4, m_size/30 * m_frameCount, m_rad, m_color.toD3Dcolor());
 		return;
 	}
-	Shape::drawNgon(m_d3dDevice, m_pos, 4, 10.0f, m_rad, Color(1.0f, 1.0f, 1.0f, 0.5f).toD3Dcolor());
-	Shape::drawNgon(m_d3dDevice, m_pos, 4, 20.0f, m_rad, m_color.toD3Dcolor());
+	Shape::drawNgon(m_d3dDevice, m_pos, 4, m_size/2, m_rad, Color(1.0f, 1.0f, 1.0f, 0.5f).toD3Dcolor());
+	Shape::drawNgon(m_d3dDevice, m_pos, 4, m_size, m_rad, m_color.toD3Dcolor());
 }
 
 void Enemy::blowOff(Vector2 vec) {
-	if (m_disableCount > 0) return;
-	m_disableCount = 10;
+	if (m_damageCount > 0) return;
+	m_damageCount = 10;
 	m_vec += vec;
 }
 
@@ -112,6 +112,7 @@ RedEnemy::RedEnemy(Vector2 pos, std::shared_ptr<Player> player, LPDIRECT3DDEVICE
 Enemy(pos, d3dDevice), m_player(player)
 {
 	m_color = Color(1.0f, 0.4f, 0.4f, 0.5f);
+	m_size = 20.0f;
 }
 
 void RedEnemy::update() {
@@ -127,6 +128,7 @@ OrangeEnemy::OrangeEnemy(Vector2 pos, std::shared_ptr<Player> player, std::share
 Enemy(pos, d3dDevice), m_player(player), m_bullets(bullets)
 {
 	m_color = Color(1.0f, 0.5f, 0.0f, 0.5f);
+	m_size = 20.0f;
 }
 
 void OrangeEnemy::update() {
@@ -151,6 +153,7 @@ GreenEnemy::GreenEnemy(Vector2 pos, std::shared_ptr<Player> player, LPDIRECT3DDE
 Enemy(pos, d3dDevice), m_player(player)
 {
 	m_color = Color(0.5f, 1.0f, 0.5f, 0.5f);
+	m_size = 20.0f;
 }
 
 void GreenEnemy::update() {
@@ -160,6 +163,29 @@ void GreenEnemy::update() {
 	auto dis = m_player->getPos() - m_pos;
 	m_vec *= 0.95f;
 	m_pos += Vector2::fromAngle(dis.toAngle()) * 2.5f + m_vec;
+}
+
+PurpleEnemy::PurpleEnemy(Vector2 pos, float size, std::shared_ptr<Player> player, LPDIRECT3DDEVICE9 d3dDevice) :
+Enemy(pos, d3dDevice), m_player(player)
+{
+	m_color = Color(1.0f, 0.3f, 0.8f, 0.5f);
+	m_size = size;
+}
+
+void PurpleEnemy::update() {
+	Enemy::update();
+	if (m_boot) return;
+
+	auto dis = m_player->getPos() - m_pos;
+	m_vec *= 0.97f;
+	m_pos += Vector2::fromAngle(dis.toAngle()) * 1.0f + m_vec;
+
+	if (m_pos.x < 0 || m_pos.x > 640 || m_pos.y < 0 || m_pos.y > 480) {
+		if (m_size == 20.0f) return;
+		m_size -= 10.0f;
+		m_vec *= -0.5f;
+		m_pos = Vector2(clamp(m_pos.x, 0.0f, 640.0f), clamp(m_pos.y, 0.0f, 480.0f));
+	}
 }
 
 Bullet::Bullet(Vector2 pos, Vector2 vec, LPDIRECT3DDEVICE9 d3dDevice) :

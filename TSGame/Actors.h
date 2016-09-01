@@ -48,13 +48,14 @@ public:
 	void blowOff(Vector2 vec);
 	Vector2 getPos() const { return m_pos; }
 	Color getColor() const { return m_color; }
+	float getSize() const { return m_size; }
 	bool isBooting() const { return m_boot; }
 protected:
 	LPDIRECT3DDEVICE9 m_d3dDevice;
 	Vector2 m_pos, m_vec;
 	Color m_color;
-	float m_rad;
-	int m_frameCount, m_disableCount;
+	float m_rad, m_size;
+	int m_frameCount, m_damageCount;
 	bool m_boot;
 };
 
@@ -86,7 +87,7 @@ private:
 
 class PurpleEnemy : public Enemy {
 public:
-	PurpleEnemy(Vector2 pos, std::shared_ptr<Player> player, LPDIRECT3DDEVICE9 d3dDevice);
+	PurpleEnemy(Vector2 pos, float size, std::shared_ptr<Player> player, LPDIRECT3DDEVICE9 d3dDevice);
 	void update() override;
 private:
 	std::shared_ptr<Player> m_player;

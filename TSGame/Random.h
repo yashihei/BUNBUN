@@ -17,7 +17,7 @@ public:
 		std::uniform_int_distribution<int> dice(a, b);
 		return dice(mt);
 	}
-	float next(float n) {
+	float next(float n = 1.0f) {
 		return next(0.0f, n);
 	}
 	float next(float a, float b) {

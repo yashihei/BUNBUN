@@ -69,7 +69,10 @@ void TSGame::update() {
 		if (r < 0.05f) {
 			auto enemy = std::make_shared<GreenEnemy>(pos, m_player, m_graphicDevice->getDevice());
 			m_enemies->add(enemy);
-		} else if (r < 0.15f) {
+		} else if (r < 0.10f) {
+			auto enemy = std::make_shared<PurpleEnemy>(pos, 40.0f, m_player, m_graphicDevice->getDevice());
+			m_enemies->add(enemy);
+		} else if (r < 0.25f) {
 			auto enemy = std::make_shared<OrangeEnemy>(pos, m_player, m_bullets, m_graphicDevice->getDevice());
 			m_enemies->add(enemy);
 		} else {
@@ -79,7 +82,7 @@ void TSGame::update() {
 	}
 	//enemy vs flail
 	for (auto& enemy : *m_enemies) {
-		if (!enemy->isBooting() && isHit(enemy->getPos(), m_flail->getPos(), 15.0f, m_flail->getRadius())) {
+		if (!enemy->isBooting() && isHit(enemy->getPos(), m_flail->getPos(), enemy->getSize() - 5, m_flail->getRadius())) {
 			auto dis = enemy->getPos() - m_player->getPos();
 			auto len = m_flail->getVec().length();
 			enemy->blowOff(dis.normalized() * len);

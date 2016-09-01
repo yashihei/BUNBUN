@@ -3,6 +3,7 @@
 
 struct Color {
 	Color(float r_ = 1.0f, float g_ = 1.0f, float b_ = 1.0f, float a_ = 1.0f) : a(a_), r(r_), g(g_), b(b_) {}
+	//Color(int r_ = 255, int g_ = 255, int b_ = 255, int a_ = 255) : a(a_/255), r(r_/255), g(g_/255), b(b_/255) {}
 	float a, r, g, b;
 
 	D3DCOLOR toD3Dcolor() const {
