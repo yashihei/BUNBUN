@@ -6,6 +6,11 @@ struct Color {
 	//Color(int r_ = 255, int g_ = 255, int b_ = 255, int a_ = 255) : a(a_/255), r(r_/255), g(g_/255), b(b_/255) {}
 	float a, r, g, b;
 
+	Color setAlpha(float alpha) {
+		a = alpha;
+		return *this;
+	}
+
 	D3DCOLOR toD3Dcolor() const {
 		DWORD a_ = static_cast<DWORD>(a * 255) << 24;
 		DWORD r_ = static_cast<DWORD>(r * 255) << 16;

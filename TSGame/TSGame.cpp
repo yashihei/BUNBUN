@@ -67,16 +67,16 @@ void TSGame::update() {
 		}
 		float r = m_random->next(1.0f);
 		if (r < 0.05f) {
-			auto enemy = std::make_shared<GreenEnemy>(pos, m_player, m_graphicDevice->getDevice());
+			auto enemy = std::make_shared<GreenEnemy>(pos, m_player, m_effects, m_graphicDevice->getDevice());
 			m_enemies->add(enemy);
-		} else if (r < 0.10f) {
-			auto enemy = std::make_shared<PurpleEnemy>(pos, 40.0f, m_player, m_graphicDevice->getDevice());
+		} else if (r < 0.15f) {
+			auto enemy = std::make_shared<PurpleEnemy>(pos, 40.0f, m_player, m_effects, m_graphicDevice->getDevice());
 			m_enemies->add(enemy);
 		} else if (r < 0.25f) {
-			auto enemy = std::make_shared<OrangeEnemy>(pos, m_player, m_bullets, m_graphicDevice->getDevice());
+			auto enemy = std::make_shared<OrangeEnemy>(pos, m_player, m_bullets, m_effects, m_graphicDevice->getDevice());
 			m_enemies->add(enemy);
 		} else {
-			auto enemy = std::make_shared<RedEnemy>(pos, m_player, m_graphicDevice->getDevice());
+			auto enemy = std::make_shared<RedEnemy>(pos, m_player, m_effects, m_graphicDevice->getDevice());
 			m_enemies->add(enemy);
 		}
 	}
@@ -92,7 +92,7 @@ void TSGame::update() {
 		if (pos.x < 0 || pos.x > 640 || pos.y < 0 || pos.y > 480) {
 			m_score += 100;
 			enemy->kill();
-			auto effect = std::make_shared<Effect>(enemy->getPos(), enemy->getColor(), 75.0f, m_graphicDevice->getDevice());
+			auto effect = std::make_shared<Effect>(enemy->getPos(), enemy->getColor().setAlpha(1.0f), 75.0f, m_graphicDevice->getDevice());
 			m_effects->add(effect);
 		}
 	}
@@ -118,7 +118,7 @@ void TSGame::update() {
 	if (allclean) {
 		for (auto& enemy : *m_enemies) {
 			enemy->kill();
-			auto effect = std::make_shared<Effect>(enemy->getPos(), enemy->getColor(), 75.0f, m_graphicDevice->getDevice());
+			auto effect = std::make_shared<Effect>(enemy->getPos(), enemy->getColor().setAlpha(1.0f), 75.0f, m_graphicDevice->getDevice());
 			m_effects->add(effect);
 		}
 		m_bullets->clear();
@@ -129,7 +129,10 @@ void TSGame::draw() {
 	if (m_gameover) {
 		m_titleFont->drawStr("BUN BUN", { 10, 200 }, Color(1.0f, 0.5f, 0.0f, 0.8f).toD3Dcolor());
 		if (m_frameCount % 60 < 30) {
-			m_hudFont->drawStr("PUSH Z KEY TO START", { 10, 250 }, Color().toD3Dcolor());
+			if (m_inputManager->getXInput()->isConnecting())
+				m_hudFont->drawStr("PUSH BUTTON 1 TO START", { 10, 250 }, Color().toD3Dcolor());
+			else
+				m_hudFont->drawStr("PUSH Z TO START", { 10, 250 }, Color().toD3Dcolor());
 		}
 	}
 
@@ -139,11 +142,11 @@ void TSGame::draw() {
 	for (int i = 0; i < 12; i++)
 		Shape::drawLine(m_graphicDevice->getDevice(), { 0.0f, i*40.0f }, { 640.f, i*40.0f }, 1.0f, Color(1.0f, 1.0f, 1.0f, 0.125f).toD3Dcolor());
 
+	m_effects->draw();
 	m_flail->draw();
 	m_player->draw();
 	m_enemies->draw();
 	m_bullets->draw();
-	m_effects->draw();
 
 	//draw hud
 	m_hudFont->drawStr("SCORE " + std::to_string(m_score), { 10, 10 }, Color(0.6f, 1.0f, 0.6f, 1.0f).toD3Dcolor());

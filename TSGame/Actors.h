@@ -42,7 +42,7 @@ private:
 
 class Enemy : public Actor {
 public:
-	Enemy(Vector2 pos, LPDIRECT3DDEVICE9 d3dDevice);
+	Enemy(Vector2 pos, std::shared_ptr<ActorManager<Effect>> effects, LPDIRECT3DDEVICE9 d3dDevice);
 	void update() override;
 	void draw() override;
 	void blowOff(Vector2 vec);
@@ -52,6 +52,7 @@ public:
 	bool isBooting() const { return m_boot; }
 protected:
 	LPDIRECT3DDEVICE9 m_d3dDevice;
+	std::shared_ptr<ActorManager<Effect>> m_effects;
 	Vector2 m_pos, m_vec;
 	Color m_color;
 	float m_rad, m_size;
@@ -61,7 +62,7 @@ protected:
 
 class RedEnemy : public Enemy {
 public:
-	RedEnemy(Vector2 pos, std::shared_ptr<Player> player, LPDIRECT3DDEVICE9 d3dDevice);
+	RedEnemy(Vector2 pos, std::shared_ptr<Player> player, std::shared_ptr<ActorManager<Effect>> effects, LPDIRECT3DDEVICE9 d3dDevice);
 	void update() override;
 private:
 	std::shared_ptr<Player> m_player;
@@ -70,7 +71,7 @@ private:
 class Bullet;
 class OrangeEnemy : public Enemy {
 public:
-	OrangeEnemy(Vector2 pos, std::shared_ptr<Player> player, std::shared_ptr<ActorManager<Bullet>> bullets, LPDIRECT3DDEVICE9 d3dDevice);
+	OrangeEnemy(Vector2 pos, std::shared_ptr<Player> player, std::shared_ptr<ActorManager<Bullet>> bullets, std::shared_ptr<ActorManager<Effect>> effects, LPDIRECT3DDEVICE9 d3dDevice);
 	void update() override;
 private:
 	std::shared_ptr<Player> m_player;
@@ -79,7 +80,7 @@ private:
 
 class GreenEnemy : public Enemy {
 public:
-	GreenEnemy(Vector2 pos, std::shared_ptr<Player> player, LPDIRECT3DDEVICE9 d3dDevice);
+	GreenEnemy(Vector2 pos, std::shared_ptr<Player> player, std::shared_ptr<ActorManager<Effect>> effects, LPDIRECT3DDEVICE9 d3dDevice);
 	void update() override;
 private:
 	std::shared_ptr<Player> m_player;
@@ -87,7 +88,7 @@ private:
 
 class PurpleEnemy : public Enemy {
 public:
-	PurpleEnemy(Vector2 pos, float size, std::shared_ptr<Player> player, LPDIRECT3DDEVICE9 d3dDevice);
+	PurpleEnemy(Vector2 pos, float size, std::shared_ptr<Player> player, std::shared_ptr<ActorManager<Effect>> effects, LPDIRECT3DDEVICE9 d3dDevice);
 	void update() override;
 private:
 	std::shared_ptr<Player> m_player;
@@ -114,6 +115,6 @@ private:
 	LPDIRECT3DDEVICE9 m_d3dDevice;
 	Vector2 m_pos;
 	Color m_color;
-	float m_size;
+	float m_size, m_alpha;
 	int m_frameCount;
 };
