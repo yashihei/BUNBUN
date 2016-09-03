@@ -56,7 +56,7 @@ void TSGame::update() {
 
 	if (m_frameCount % 900 == 0)
 		m_level = std::min(m_level + 1, 10);
-	if (m_random->next(100 - m_level * 5) == 0) {
+	if (m_random->next(100 - m_level * 5) == 0 && m_enemies->size() < 10) {
 		//プレイヤーから離れた場所に出現させる
 		Vector2 pos;
 		while (true) {

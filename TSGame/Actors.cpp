@@ -53,7 +53,7 @@ m_pos(m_player->getPos()), m_vec(), m_radius(25.0f)
 void Flail::update() {
 	auto dis = m_player->getPos() - m_pos;
 	m_vec += dis / 50;
-	m_vec *= 0.975f;
+	m_vec *= 0.97f;
 	m_pos += m_vec;
 
 	m_trails.push_front(m_pos);
@@ -148,7 +148,7 @@ void OrangeEnemy::update() {
 	} else if (m_frameCount % 120 < 90) {
 		m_pos += Vector2::fromAngle(dis.toAngle()) * 1.0f;
 	} else {
-		m_rad += 0.15f;
+		m_rad += 0.10f;
 	}
 	m_vec *= 0.97f;
 	m_pos += m_vec;
@@ -222,4 +222,16 @@ void Effect::update() {
 void Effect::draw() {
 	m_color.a = Easing::OutQuint(m_frameCount, 60, m_alpha, 0.0);
 	Shape::drawCircle(m_d3dDevice, m_pos, Easing::OutQuint(m_frameCount, 60, 0.0, m_size), m_color.toD3Dcolor());
+}
+
+Item::Item(Vector2 pos, LPDIRECT3DDEVICE9 d3dDevice) :
+m_pos(pos), m_d3dDevice(d3dDevice)
+{
+}
+
+void Item::update() {
+	m_frameCount++;
+}
+
+void Item::draw() {
 }

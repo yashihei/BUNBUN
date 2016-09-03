@@ -118,3 +118,14 @@ private:
 	float m_size, m_alpha;
 	int m_frameCount;
 };
+
+class Item : public Actor {
+public:
+	Item(Vector2 pos, LPDIRECT3DDEVICE9 d3dDevice);
+	void update();
+	void draw();
+private:
+	Vector2 m_pos;
+	LPDIRECT3DDEVICE9 m_d3dDevice;
+	int m_frameCount;
+};
