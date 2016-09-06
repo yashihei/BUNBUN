@@ -102,6 +102,10 @@ XInput::XInput(int index) :
 m_index(index)
 {
 	m_state.fill(std::bitset<StateNum>());
+	m_xInputState.Gamepad.sThumbLX = 0;
+	m_xInputState.Gamepad.sThumbLY = 0;
+	m_xInputState.Gamepad.sThumbRX = 0;
+	m_xInputState.Gamepad.sThumbRY = 0;
 }
 
 void XInput::updateState() {

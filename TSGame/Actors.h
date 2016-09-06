@@ -8,7 +8,7 @@
 
 class Player {
 public:
-	Player(std::shared_ptr<InputManager> inputManager, LPDIRECT3DDEVICE9 d3dDevice);
+	Player(InputMgrPtr inputManager, LPDIRECT3DDEVICE9 d3dDevice);
 	void update();
 	void draw();
 	void clash();
@@ -25,7 +25,7 @@ private:
 
 class Flail {
 public:
-	Flail(std::shared_ptr<Player> player, LPDIRECT3DDEVICE9 d3dDevice);
+	Flail(PlayerPtr player, LPDIRECT3DDEVICE9 d3dDevice);
 	void update();
 	void draw();
 	void init();
@@ -33,7 +33,7 @@ public:
 	Vector2 getVec() const { return m_vec; }
 	float getRadius() const { return m_radius; }
 private:
-	std::shared_ptr<Player> m_player;
+	PlayerPtr m_player;
 	LPDIRECT3DDEVICE9 m_d3dDevice;
 	Vector2 m_pos, m_vec;
 	float m_radius;
@@ -42,7 +42,7 @@ private:
 
 class Enemy : public Actor {
 public:
-	Enemy(Vector2 pos, std::shared_ptr<ActorManager<Effect>> effects, LPDIRECT3DDEVICE9 d3dDevice);
+	Enemy(Vector2 pos, EffectMgrPtr effects, LPDIRECT3DDEVICE9 d3dDevice);
 	void update() override;
 	void draw() override;
 	void blowOff(Vector2 vec);
@@ -52,7 +52,7 @@ public:
 	bool isBooting() const { return m_boot; }
 protected:
 	LPDIRECT3DDEVICE9 m_d3dDevice;
-	std::shared_ptr<ActorManager<Effect>> m_effects;
+	EffectMgrPtr m_effects;
 	Vector2 m_pos, m_vec;
 	Color m_color;
 	float m_rad, m_size;
@@ -62,36 +62,36 @@ protected:
 
 class RedEnemy : public Enemy {
 public:
-	RedEnemy(Vector2 pos, std::shared_ptr<Player> player, std::shared_ptr<ActorManager<Effect>> effects, LPDIRECT3DDEVICE9 d3dDevice);
+	RedEnemy(Vector2 pos, PlayerPtr player, EffectMgrPtr effects, LPDIRECT3DDEVICE9 d3dDevice);
 	void update() override;
 private:
-	std::shared_ptr<Player> m_player;
+	PlayerPtr m_player;
 };
 
 class Bullet;
 class OrangeEnemy : public Enemy {
 public:
-	OrangeEnemy(Vector2 pos, std::shared_ptr<Player> player, std::shared_ptr<ActorManager<Bullet>> bullets, std::shared_ptr<ActorManager<Effect>> effects, LPDIRECT3DDEVICE9 d3dDevice);
+	OrangeEnemy(Vector2 pos, PlayerPtr player, BulletMgrPtr bullets, EffectMgrPtr effects, LPDIRECT3DDEVICE9 d3dDevice);
 	void update() override;
 private:
-	std::shared_ptr<Player> m_player;
-	std::shared_ptr<ActorManager<Bullet>> m_bullets;
+	PlayerPtr m_player;
+	BulletMgrPtr m_bullets;
 };
 
 class GreenEnemy : public Enemy {
 public:
-	GreenEnemy(Vector2 pos, std::shared_ptr<Player> player, std::shared_ptr<ActorManager<Effect>> effects, LPDIRECT3DDEVICE9 d3dDevice);
+	GreenEnemy(Vector2 pos, PlayerPtr player, EffectMgrPtr effects, LPDIRECT3DDEVICE9 d3dDevice);
 	void update() override;
 private:
-	std::shared_ptr<Player> m_player;
+	PlayerPtr m_player;
 };
 
 class PurpleEnemy : public Enemy {
 public:
-	PurpleEnemy(Vector2 pos, float size, std::shared_ptr<Player> player, std::shared_ptr<ActorManager<Effect>> effects, LPDIRECT3DDEVICE9 d3dDevice);
+	PurpleEnemy(Vector2 pos, float size, PlayerPtr player, EffectMgrPtr effects, LPDIRECT3DDEVICE9 d3dDevice);
 	void update() override;
 private:
-	std::shared_ptr<Player> m_player;
+	PlayerPtr m_player;
 };
 
 class Bullet : public Actor {

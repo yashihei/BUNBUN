@@ -12,6 +12,12 @@ class Bullet;
 class Effect;
 class Font;
 
+using PlayerPtr = std::shared_ptr<Player>;
+using FlailPtr = std::shared_ptr<Flail>;
+using EnemyMgrPtr = std::shared_ptr<ActorManager<Enemy>>;
+using BulletMgrPtr = std::shared_ptr<ActorManager<Bullet>>;
+using EffectMgrPtr = std::shared_ptr<ActorManager<Effect>>;
+
 class TSGame : public GameApp {
 public:
 	TSGame(HWND hWnd, HINSTANCE hInstance);
@@ -19,11 +25,11 @@ private:
 	void update() override;
 	void draw() override;
 
-	std::shared_ptr<Player> m_player;
-	std::shared_ptr<Flail> m_flail;
-	std::shared_ptr<ActorManager<Enemy>> m_enemies;
-	std::shared_ptr<ActorManager<Bullet>> m_bullets;
-	std::shared_ptr<ActorManager<Effect>> m_effects;
+	PlayerPtr m_player;
+	FlailPtr m_flail;
+	EnemyMgrPtr m_enemies;
+	BulletMgrPtr m_bullets;
+	EffectMgrPtr m_effects;
 	std::shared_ptr<Font> m_hudFont, m_titleFont;
 	int m_score, m_level;
 	bool m_gameover;

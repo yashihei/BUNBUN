@@ -9,6 +9,13 @@ class InputManager;
 class FPSControler;
 class Random;
 
+using GraphicDevicePtr = std::shared_ptr<GraphicDevice>;
+using TextureMgrPtr = std::shared_ptr<TextureManager>;
+using SoundMgrPtr = std::shared_ptr<SoundManager>;
+using InputMgrPtr = std::shared_ptr<InputManager>;
+using FPSControlerPtr = std::shared_ptr<FPSControler>;
+using RandomPtr = std::shared_ptr<Random>;
+
 class GameApp {
 public:
 	GameApp(HWND hWnd, HINSTANCE hInstance);
@@ -18,11 +25,11 @@ protected:
 	virtual void update() = 0;
 	virtual void draw() = 0;
 
-	std::shared_ptr<GraphicDevice> m_graphicDevice;
-	std::shared_ptr<TextureManager> m_textureManager;
-	std::shared_ptr<SoundManager> m_soundManager;
-	std::shared_ptr<InputManager> m_inputManager;
-	std::shared_ptr<FPSControler> m_fpsControler;
-	std::shared_ptr<Random> m_random;
+	GraphicDevicePtr m_graphicDevice;
+	TextureMgrPtr m_textureManager;
+	SoundMgrPtr m_soundManager;
+	InputMgrPtr m_inputManager;
+	FPSControlerPtr m_fpsControler;
+	RandomPtr m_random;
 	int m_frameCount;
 };

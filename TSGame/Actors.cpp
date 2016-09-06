@@ -5,8 +5,9 @@
 #include "Shape.h"
 #include "Util.h"
 #include "Easing.h"
+#include "Font.h"
 
-Player::Player(std::shared_ptr<InputManager> inputManager, LPDIRECT3DDEVICE9 d3dDevice) :
+Player::Player(InputMgrPtr inputManager, LPDIRECT3DDEVICE9 d3dDevice) :
 m_inputManager(inputManager), m_d3dDevice(d3dDevice),
 m_pos(320, 240),
 m_frameCount(0), m_mutekiCount(0), m_life(3)
@@ -45,7 +46,7 @@ void Player::draw() {
 	Shape::drawCircle(m_d3dDevice, m_pos, 5.0f, Color(0.7f, 0.7f, 1.0f, 0.5f).toD3Dcolor());
 }
 
-Flail::Flail(std::shared_ptr<Player> player, LPDIRECT3DDEVICE9 d3dDevice) :
+Flail::Flail(PlayerPtr player, LPDIRECT3DDEVICE9 d3dDevice) :
 m_player(player), m_d3dDevice(d3dDevice),
 m_pos(m_player->getPos()), m_vec(), m_radius(25.0f)
 {}
@@ -77,7 +78,7 @@ void Flail::init() {
 	m_vec = Vector2();
 }
 
-Enemy::Enemy(Vector2 pos, std::shared_ptr<ActorManager<Effect>> effects, LPDIRECT3DDEVICE9 d3dDevice) :
+Enemy::Enemy(Vector2 pos, EffectMgrPtr effects, LPDIRECT3DDEVICE9 d3dDevice) :
 m_d3dDevice(d3dDevice),
 m_effects(effects),
 m_pos(pos), m_vec(),
@@ -113,7 +114,7 @@ void Enemy::blowOff(Vector2 vec) {
 	m_vec += vec;
 }
 
-RedEnemy::RedEnemy(Vector2 pos, std::shared_ptr<Player> player, std::shared_ptr<ActorManager<Effect>> effects, LPDIRECT3DDEVICE9 d3dDevice) :
+RedEnemy::RedEnemy(Vector2 pos, PlayerPtr player, EffectMgrPtr effects, LPDIRECT3DDEVICE9 d3dDevice) :
 Enemy(pos, effects, d3dDevice), m_player(player)
 {
 	m_color = Color(1.0f, 0.4f, 0.4f, 0.5f);
@@ -129,7 +130,7 @@ void RedEnemy::update() {
 	m_pos += Vector2::fromAngle(dis.toAngle()) * 1.5f + m_vec;
 }
 
-OrangeEnemy::OrangeEnemy(Vector2 pos, std::shared_ptr<Player> player, std::shared_ptr<ActorManager<Bullet>> bullets, std::shared_ptr<ActorManager<Effect>> effects, LPDIRECT3DDEVICE9 d3dDevice) :
+OrangeEnemy::OrangeEnemy(Vector2 pos, PlayerPtr player, BulletMgrPtr bullets, EffectMgrPtr effects, LPDIRECT3DDEVICE9 d3dDevice) :
 Enemy(pos, effects, d3dDevice), m_player(player), m_bullets(bullets)
 {
 	m_color = Color(1.0f, 0.5f, 0.0f, 0.5f);
@@ -154,7 +155,7 @@ void OrangeEnemy::update() {
 	m_pos += m_vec;
 }
 
-GreenEnemy::GreenEnemy(Vector2 pos, std::shared_ptr<Player> player, std::shared_ptr<ActorManager<Effect>> effects, LPDIRECT3DDEVICE9 d3dDevice) :
+GreenEnemy::GreenEnemy(Vector2 pos, PlayerPtr player, EffectMgrPtr effects, LPDIRECT3DDEVICE9 d3dDevice) :
 Enemy(pos, effects, d3dDevice), m_player(player)
 {
 	m_color = Color(0.5f, 1.0f, 0.5f, 0.5f);
@@ -170,7 +171,7 @@ void GreenEnemy::update() {
 	m_pos += Vector2::fromAngle(dis.toAngle()) * 2.5f + m_vec;
 }
 
-PurpleEnemy::PurpleEnemy(Vector2 pos, float size, std::shared_ptr<Player> player, std::shared_ptr<ActorManager<Effect>> effects, LPDIRECT3DDEVICE9 d3dDevice) :
+PurpleEnemy::PurpleEnemy(Vector2 pos, float size, PlayerPtr player, EffectMgrPtr effects, LPDIRECT3DDEVICE9 d3dDevice) :
 Enemy(pos, effects, d3dDevice), m_player(player)
 {
 	m_color = Color(1.0f, 0.3f, 0.8f, 0.5f);
@@ -225,7 +226,7 @@ void Effect::draw() {
 }
 
 Item::Item(Vector2 pos, LPDIRECT3DDEVICE9 d3dDevice) :
-m_pos(pos), m_d3dDevice(d3dDevice)
+m_d3dDevice(d3dDevice), m_pos(pos)
 {
 }
 
