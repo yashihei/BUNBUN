@@ -17,6 +17,7 @@ void Player::update() {
 	m_frameCount++;
 	m_mutekiCount--;
 
+	//FIXME:
 	if (!m_inputManager->getXInput()->getLeftThumb().isZero()) {
 		m_pos += m_inputManager->getXInput()->getLeftThumb().normalized() * 5.0f;
 	} else {
@@ -63,7 +64,10 @@ void Flail::update() {
 }
 
 void Flail::draw() {
-	Shape::drawLine(m_d3dDevice, m_pos, m_player->getPos(), 1.0f, Color(1.0f, 1.0f, 1.0f, 0.75f).toD3Dcolor());
+	auto dis = m_player->getPos() - m_pos;
+	for (int i = 0; i < 5; i++) {
+		Shape::drawCircle(m_d3dDevice, m_pos + dis/5 * i, 5.0f, Color(1.0f, 1.0f, 0.6f, 0.6f).toD3Dcolor());
+	}
 
 	int cnt = 0;
 	for (auto& trail : m_trails) {

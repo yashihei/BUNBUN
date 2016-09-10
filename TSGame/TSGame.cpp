@@ -138,9 +138,9 @@ void TSGame::draw() {
 
 	//draw background
 	for (int i = 0; i < 16; i++)
-		Shape::drawLine(m_graphicDevice->getDevice(), { i*40.0f, 0.0f }, { i*40.0f, 480.0f }, 1.0f, Color(1.0f, 1.0f, 1.0f, 0.125f).toD3Dcolor());
+		Shape::drawLine(m_graphicDevice->getDevice(), { i*40.0f, 0.0f }, { i*40.0f, 480.0f }, 1.0f, Color(0.75f, 0.75f, 1.0f, 0.125f).toD3Dcolor());
 	for (int i = 0; i < 12; i++)
-		Shape::drawLine(m_graphicDevice->getDevice(), { 0.0f, i*40.0f }, { 640.f, i*40.0f }, 1.0f, Color(1.0f, 1.0f, 1.0f, 0.125f).toD3Dcolor());
+		Shape::drawLine(m_graphicDevice->getDevice(), { 0.0f, i*40.0f }, { 640.f, i*40.0f }, 1.0f, Color(0.75f, 0.75f, 1.0f, 0.125f).toD3Dcolor());
 
 	m_effects->draw();
 	m_flail->draw();

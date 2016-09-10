@@ -17,7 +17,7 @@ public:
 	Vector2 getPos() const { return m_pos; }
 	int getLife() const { return m_life; }
 private:
-	std::shared_ptr<InputManager> m_inputManager;
+	InputMgrPtr m_inputManager;
 	LPDIRECT3DDEVICE9 m_d3dDevice;
 	Vector2 m_pos;
 	int m_frameCount, m_mutekiCount, m_life;
