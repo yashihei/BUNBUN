@@ -10,41 +10,75 @@
 Player::Player(InputMgrPtr inputManager, LPDIRECT3DDEVICE9 d3dDevice) :
 m_inputManager(inputManager), m_d3dDevice(d3dDevice),
 m_pos(320, 240),
-m_frameCount(0), m_mutekiCount(0), m_life(3)
+m_stateCount(0), m_mutekiCount(0), m_life(3), m_state(State::Normal)
 {}
 
-void Player::update() {
-	m_frameCount++;
-	m_mutekiCount--;
+void Player::init() {
+	m_pos = Vector2(320, 240);
+	m_stateCount = m_mutekiCount = 0;
+	m_life = 3;
+	m_state = State::Normal;
+}
 
-	//FIXME:
-	if (!m_inputManager->getXInput()->getLeftThumb().isZero()) {
-		m_pos += m_inputManager->getXInput()->getLeftThumb().normalized() * 5.0f;
-	} else {
-		const Vector2 dir(m_inputManager->isPressedRight() - m_inputManager->isPressedLeft(), m_inputManager->isPressedDown() - m_inputManager->isPressedUp());
-		if (!dir.isZero())
-			m_pos += dir.normalized() * 5.0f;
+void Player::update() {
+	m_stateCount++; m_stateCount++; m_mutekiCount--;
+	
+	switch (m_state) {
+	case State::Boot:
+		if (m_stateCount == 60) {
+			m_stateCount = 0;
+			m_mutekiCount = 120;
+			m_state = State::Normal;
+		}
+		break;
+	case State::Normal:
+		moveCtrl();
+		break;
+	case State::Damage:
+		if (m_stateCount == 120) {
+			m_stateCount = 0;
+			m_state = State::Boot;
+			m_life--;
+		}
+		break;
 	}
+}
+
+void Player::moveCtrl() {
+	auto dir = m_inputManager->getAxis();
+	if (!dir.isZero())
+		m_pos += dir.normalized() * 5.0f;
 	m_pos = Vector2(clamp(m_pos.x, 0.0f, 640.0f), clamp(m_pos.y, 0.0f, 480.0f));
 }
 
 void Player::clash() {
-	m_mutekiCount = 180;
-	m_life--;
-}
-
-void Player::init() {
-	m_pos = Vector2(320, 240);
-	m_frameCount = m_mutekiCount = 0;
-	m_life = 3;
+	m_state = State::Damage;
+	m_stateCount = 0;
 }
 
 void Player::draw() {
-	auto color = Color(0.5f, 0.5f, 1.0f, 0.5f);
-	if (m_mutekiCount > 0 && m_mutekiCount % 10 < 5)
-		color = Color(0.0f, 0.0f, 0.5f, 0.5f);
-	Shape::drawCircle(m_d3dDevice, m_pos, 10.0f, color.toD3Dcolor());
-	Shape::drawCircle(m_d3dDevice, m_pos, 5.0f, Color(0.7f, 0.7f, 1.0f, 0.5f).toD3Dcolor());
+	switch (m_state) {
+		case State::Boot: {
+			float radius = Easing::OutQuint(m_stateCount, 60, 300, 10);
+			Color color = HSV(0.7f, Easing::InQuint(m_stateCount, 60, 0.0f, 1.0f), 1.0f).toColor(Easing::OutQuint(m_stateCount, 60, 0.0f, 0.5f));
+			Shape::drawCircle(m_d3dDevice, m_pos, radius, color.toD3Dcolor());
+			break;
+		}
+		case State::Normal: {
+			auto color = Color(0.5f, 0.5f, 1.0f, 0.5f);
+			if (m_mutekiCount > 0 && m_mutekiCount % 10 > 5)
+				color = Color(0.0f, 0.0f, 0.5f, 0.5f);
+			Shape::drawCircle(m_d3dDevice, m_pos, 10.0f, color.toD3Dcolor());
+			Shape::drawCircle(m_d3dDevice, m_pos, 5.0f, Color(0.7f, 0.7f, 1.0f, 0.5f).toD3Dcolor());
+			break;
+		}
+		case State::Damage: {
+			float alpha = Easing::OutQuint(m_stateCount, 120, 0.5f, 0.0f);
+			Shape::drawCircle(m_d3dDevice, m_pos, 10.0f, Color(0.5f, 0.5f, 1.0f, alpha).toD3Dcolor());
+			Shape::drawCircle(m_d3dDevice, m_pos, 5.0f, Color(0.7f, 0.7f, 1.0f, alpha).toD3Dcolor());
+			break;
+		}
+	}
 }
 
 Flail::Flail(PlayerPtr player, LPDIRECT3DDEVICE9 d3dDevice) :
@@ -80,6 +114,7 @@ void Flail::init() {
 	m_radius = 25.0f;
 	m_pos = m_player->getPos();
 	m_vec = Vector2();
+	m_trails.clear();
 }
 
 Enemy::Enemy(Vector2 pos, EffectMgrPtr effects, LPDIRECT3DDEVICE9 d3dDevice) :

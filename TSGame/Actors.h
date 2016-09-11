@@ -9,18 +9,22 @@
 class Player {
 public:
 	Player(InputMgrPtr inputManager, LPDIRECT3DDEVICE9 d3dDevice);
+	void init();
 	void update();
 	void draw();
+	void moveCtrl();
 	void clash();
-	void init();
-	bool muteki() const { return m_mutekiCount > 0 ? true : false; }
+	bool canClash() const { return m_mutekiCount > 0 || m_state != State::Normal ? false : true; }
 	Vector2 getPos() const { return m_pos; }
 	int getLife() const { return m_life; }
 private:
 	InputMgrPtr m_inputManager;
 	LPDIRECT3DDEVICE9 m_d3dDevice;
 	Vector2 m_pos;
-	int m_frameCount, m_mutekiCount, m_life;
+	int m_stateCount, m_mutekiCount, m_life;
+	enum class State {
+		Boot, Normal, Damage
+	} m_state;
 };
 
 class Flail {

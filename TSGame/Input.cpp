@@ -102,10 +102,7 @@ XInput::XInput(int index) :
 m_index(index)
 {
 	m_state.fill(std::bitset<StateNum>());
-	m_xInputState.Gamepad.sThumbLX = 0;
-	m_xInputState.Gamepad.sThumbLY = 0;
-	m_xInputState.Gamepad.sThumbRX = 0;
-	m_xInputState.Gamepad.sThumbRY = 0;
+	m_xInputState.Gamepad.sThumbLX = m_xInputState.Gamepad.sThumbLY = 0;
 }
 
 void XInput::updateState() {
@@ -180,4 +177,17 @@ void InputManager::update() {
 	m_keyboard->updateState();
 	m_mouse->updateState();
 	m_xInput->updateState();
+}
+
+Vector2 InputManager::getAxis() {
+	Vector2 dir;
+	if (!m_xInput->getLeftThumb().isZero()) {
+		dir = m_xInput->getLeftThumb();
+	} else {
+		if (isPressedRight()) dir.x = 1.0f;
+		if (isPressedLeft()) dir.x = -1.0f;
+		if (isPressedDown()) dir.y = 1.0f;
+		if (isPressedUp()) dir.y = -1.0f;
+	}
+	return dir;
 }

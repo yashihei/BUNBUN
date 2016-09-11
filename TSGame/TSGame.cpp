@@ -44,8 +44,8 @@ void TSGame::update() {
 			m_enemies->clear();
 			m_bullets->clear();
 			m_effects->clear();
-		}
-		return;
+		} else
+			return;
 	}
 
 	m_player->update();
@@ -82,7 +82,7 @@ void TSGame::update() {
 	}
 	//enemy vs flail
 	for (auto& enemy : *m_enemies) {
-		if (!enemy->isBooting() && isHit(enemy->getPos(), m_flail->getPos(), enemy->getSize() - 5, m_flail->getRadius())) {
+		if (!enemy->isBooting() && isHit(enemy->getPos(), m_flail->getPos(), enemy->getSize() - 10, m_flail->getRadius())) {
 			auto dis = enemy->getPos() - m_player->getPos();
 			auto len = m_flail->getVec().length();
 			enemy->blowOff(dis.normalized() * len);
@@ -99,7 +99,7 @@ void TSGame::update() {
 	//enemy vs player
 	bool allclean = false;
 	for (auto& enemy : *m_enemies) {
-		if (!m_player->muteki() && isHit(enemy->getPos(), m_player->getPos(), 10.0f, 5.0f)) {
+		if (m_player->canClash() && isHit(enemy->getPos(), m_player->getPos(), 10.0f, 5.0f)) {
 			allclean = true;
 			m_player->clash();
 			break;
@@ -107,7 +107,7 @@ void TSGame::update() {
 	}
 	//bullet vs player
 	for (auto& bullet : *m_bullets) {
-		if (!m_player->muteki() && isHit(bullet->getPos(), m_player->getPos(), 5.0f, 5.0f)) {
+		if (m_player->canClash() && isHit(bullet->getPos(), m_player->getPos(), 5.0f, 5.0f)) {
 			allclean = true;
 			m_player->clash();
 			break;
@@ -134,6 +134,7 @@ void TSGame::draw() {
 			else
 				m_hudFont->drawStr("PUSH Z TO START", { 10, 250 }, Color().toD3Dcolor());
 		}
+		return;
 	}
 
 	//draw background

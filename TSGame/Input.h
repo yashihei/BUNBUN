@@ -119,6 +119,8 @@ public:
 	bool isReleasedLeft()    const { return m_keyboard->isReleased(DIK_LEFT) | m_xInput->isReleased(XInput::Left); }
 	bool isReleasedRight()   const { return m_keyboard->isReleased(DIK_RIGHT) | m_xInput->isReleased(XInput::Right); }
 
+	Vector2 getAxis();
+
 	std::shared_ptr<Keyboard> getKeyboard() { return m_keyboard; }
 	std::shared_ptr<Mouse> getMouse() { return m_mouse; }
 	std::shared_ptr<XInput> getXInput() { return m_xInput; }
