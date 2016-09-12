@@ -44,8 +44,8 @@ void TSGame::update() {
 			m_enemies->clear();
 			m_bullets->clear();
 			m_effects->clear();
-		} else
-			return;
+		}
+		return;
 	}
 
 	m_player->update();
@@ -54,8 +54,9 @@ void TSGame::update() {
 	m_bullets->update();
 	m_effects->update();
 
-	if (m_frameCount % 900 == 0)
+	if (m_frameCount % 1200 == 0) {
 		m_level = std::min(m_level + 1, 10);
+	}
 	if (m_random->next(100 - m_level * 5) == 0 && m_enemies->size() < 10) {
 		//プレイヤーから離れた場所に出現させる
 		Vector2 pos;
@@ -126,6 +127,12 @@ void TSGame::update() {
 }
 
 void TSGame::draw() {
+	//draw background
+	for (int i = 0; i < 16; i++)
+		Shape::drawLine(m_graphicDevice->getDevice(), { i*40.0f, 0.0f }, { i*40.0f, 480.0f }, 1.0f, Color(0.75f, 0.75f, 1.0f, 0.125f).toD3Dcolor());
+	for (int i = 0; i < 12; i++)
+		Shape::drawLine(m_graphicDevice->getDevice(), { 0.0f, i*40.0f }, { 640.f, i*40.0f }, 1.0f, Color(0.75f, 0.75f, 1.0f, 0.125f).toD3Dcolor());
+
 	if (m_gameover) {
 		m_titleFont->drawStr("BUN BUN", { 10, 200 }, Color(1.0f, 0.5f, 0.0f, 0.8f).toD3Dcolor());
 		if (m_frameCount % 60 < 30) {
@@ -136,12 +143,6 @@ void TSGame::draw() {
 		}
 		return;
 	}
-
-	//draw background
-	for (int i = 0; i < 16; i++)
-		Shape::drawLine(m_graphicDevice->getDevice(), { i*40.0f, 0.0f }, { i*40.0f, 480.0f }, 1.0f, Color(0.75f, 0.75f, 1.0f, 0.125f).toD3Dcolor());
-	for (int i = 0; i < 12; i++)
-		Shape::drawLine(m_graphicDevice->getDevice(), { 0.0f, i*40.0f }, { 640.f, i*40.0f }, 1.0f, Color(0.75f, 0.75f, 1.0f, 0.125f).toD3Dcolor());
 
 	m_effects->draw();
 	m_flail->draw();

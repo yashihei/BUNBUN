@@ -1,6 +1,7 @@
 #pragma once
 #define NOMINMAX
 #include <memory>
+#include <deque>
 #include <d3dx9.h>
 #include "Actor.h"
 #include "GameApp.h"

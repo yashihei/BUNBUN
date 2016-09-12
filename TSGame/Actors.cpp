@@ -59,21 +59,22 @@ void Player::clash() {
 void Player::draw() {
 	switch (m_state) {
 		case State::Boot: {
+			//TODO:line circle
 			float radius = Easing::OutQuint(m_stateCount, 60, 300, 10);
-			Color color = HSV(0.7f, Easing::InQuint(m_stateCount, 60, 0.0f, 1.0f), 1.0f).toColor(Easing::OutQuint(m_stateCount, 60, 0.0f, 0.5f));
+			Color color = HSV(0.7f, Easing::InQuint(m_stateCount, 60, 0.0, 1.0), 1.0f).toColor(Easing::OutQuint(m_stateCount, 60, 0.0, 0.5));
 			Shape::drawCircle(m_d3dDevice, m_pos, radius, color.toD3Dcolor());
 			break;
 		}
 		case State::Normal: {
-			auto color = Color(0.5f, 0.5f, 1.0f, 0.5f);
+			auto color = Color(0.5f, 0.5f, 1.0f, 0.7f);
 			if (m_mutekiCount > 0 && m_mutekiCount % 10 > 5)
-				color = Color(0.0f, 0.0f, 0.5f, 0.5f);
+				color = Color(0.0f, 0.0f, 0.5f, 0.7f);
 			Shape::drawCircle(m_d3dDevice, m_pos, 10.0f, color.toD3Dcolor());
-			Shape::drawCircle(m_d3dDevice, m_pos, 5.0f, Color(0.7f, 0.7f, 1.0f, 0.5f).toD3Dcolor());
+			Shape::drawCircle(m_d3dDevice, m_pos, 5.0f, Color(0.7f, 0.7f, 1.0f, 0.7f).toD3Dcolor());
 			break;
 		}
 		case State::Damage: {
-			float alpha = Easing::OutQuint(m_stateCount, 120, 0.5f, 0.0f);
+			float alpha = Easing::OutQuint(m_stateCount, 120, 0.7, 0.0);
 			Shape::drawCircle(m_d3dDevice, m_pos, 10.0f, Color(0.5f, 0.5f, 1.0f, alpha).toD3Dcolor());
 			Shape::drawCircle(m_d3dDevice, m_pos, 5.0f, Color(0.7f, 0.7f, 1.0f, alpha).toD3Dcolor());
 			break;
@@ -100,7 +101,7 @@ void Flail::update() {
 void Flail::draw() {
 	auto dis = m_player->getPos() - m_pos;
 	for (int i = 0; i < 5; i++) {
-		Shape::drawCircle(m_d3dDevice, m_pos + dis/5 * i, 5.0f, Color(1.0f, 1.0f, 0.6f, 0.6f).toD3Dcolor());
+		Shape::drawCircle(m_d3dDevice, m_pos + dis/5.0f * i, 5.0f, Color(1.0f, 1.0f, 0.6f, 0.6f).toD3Dcolor());
 	}
 
 	int cnt = 0;
@@ -156,7 +157,7 @@ void Enemy::blowOff(Vector2 vec) {
 RedEnemy::RedEnemy(Vector2 pos, PlayerPtr player, EffectMgrPtr effects, LPDIRECT3DDEVICE9 d3dDevice) :
 Enemy(pos, effects, d3dDevice), m_player(player)
 {
-	m_color = Color(1.0f, 0.4f, 0.4f, 0.5f);
+	m_color = Color(1.0f, 0.3f, 0.3f, 0.5f);
 	m_size = 20.0f;
 }
 
