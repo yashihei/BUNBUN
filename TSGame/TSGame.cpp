@@ -11,6 +11,7 @@
 #include "Actors.h"
 #include "Shape.h"
 #include "Color.h"
+#include "Easing.h"
 
 TSGame::TSGame(HWND hWnd, HINSTANCE hInstance) :
 GameApp(hWnd, hInstance), m_score(0), m_level(1), m_gameover(true)

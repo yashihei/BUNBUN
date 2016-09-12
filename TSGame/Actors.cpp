@@ -94,20 +94,22 @@ void Flail::update() {
 	m_pos += m_vec;
 
 	m_trails.push_front(m_pos);
-	if (m_trails.size() > 5)
+	if (m_trails.size() > 7)
 		m_trails.pop_back();
 }
 
 void Flail::draw() {
+	auto color = HSV(0.20f - 0.15f/20 * m_vec.length(), 1.0f, 1.0f).toColor(0.6f);
 	auto dis = m_player->getPos() - m_pos;
 	for (int i = 0; i < 5; i++) {
-		Shape::drawCircle(m_d3dDevice, m_pos + dis/5.0f * i, 5.0f, Color(1.0f, 1.0f, 0.6f, 0.6f).toD3Dcolor());
+		Shape::drawCircle(m_d3dDevice, m_pos + dis/5.0f * i, 5.0f, color.toD3Dcolor());
 	}
 
+	OutputDebugValue(m_vec.length());
 	int cnt = 0;
 	for (auto& trail : m_trails) {
 		cnt++;
-		Shape::drawCircle(m_d3dDevice, trail, m_radius - cnt, Color(1.0f, 1.0f, 0.4f, 0.6f / cnt).toD3Dcolor());
+		Shape::drawCircle(m_d3dDevice, trail, m_radius - cnt*1.5f, color.setAlpha(0.6f / cnt).toD3Dcolor());
 	}
 }
 
