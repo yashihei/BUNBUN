@@ -11,6 +11,6 @@ public:
 	void update() override;
 	void draw() override;
 private:
-	void changeChene(SceneType type);
+	void changeScene(SceneType type);
 	std::shared_ptr<Scene> m_scene;
 };

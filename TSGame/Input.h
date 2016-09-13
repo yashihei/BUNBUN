@@ -101,19 +101,20 @@ public:
 	bool isPressedLeft()    const { return m_keyboard->isPressed(DIK_LEFT) | m_xInput->isPressed(XInput::Left); }
 	bool isPressedRight()   const { return m_keyboard->isPressed(DIK_RIGHT) | m_xInput->isPressed(XInput::Right); }
 
-	bool isClickedButton1() const { return m_keyboard->isClicked(DIK_Z) | m_xInput->isClicked(XInput::Y); };
-	bool isClickedButton2() const { return m_keyboard->isClicked(DIK_X) | m_xInput->isClicked(XInput::B); };
-	bool isClickedButton3() const { return m_keyboard->isClicked(DIK_C) | m_xInput->isClicked(XInput::A); };
-	bool isClickedButton4() const { return m_keyboard->isClicked(DIK_V) | m_xInput->isClicked(XInput::X); };
+	bool isClickedButton() const { return isClickedButton1() | isClickedButton2() | isClickedButton3() | isClickedButton4(); }
+	bool isClickedButton1() const { return m_keyboard->isClicked(DIK_Z) | m_xInput->isClicked(XInput::Y); }
+	bool isClickedButton2() const { return m_keyboard->isClicked(DIK_X) | m_xInput->isClicked(XInput::B); }
+	bool isClickedButton3() const { return m_keyboard->isClicked(DIK_C) | m_xInput->isClicked(XInput::A); }
+	bool isClickedButton4() const { return m_keyboard->isClicked(DIK_V) | m_xInput->isClicked(XInput::X); }
 	bool isClickedUp()      const { return m_keyboard->isClicked(DIK_UP) | m_xInput->isClicked(XInput::Up); }
 	bool isClickedDown()    const { return m_keyboard->isClicked(DIK_DOWN) | m_xInput->isClicked(XInput::Down); }
 	bool isClickedLeft()    const { return m_keyboard->isClicked(DIK_LEFT) | m_xInput->isClicked(XInput::Left); }
 	bool isClickedRight()   const { return m_keyboard->isClicked(DIK_RIGHT) | m_xInput->isClicked(XInput::Right); }
 
-	bool isReleasedButton1() const { return m_keyboard->isReleased(DIK_Z) | m_xInput->isReleased(XInput::Y); };
-	bool isReleasedButton2() const { return m_keyboard->isReleased(DIK_X) | m_xInput->isReleased(XInput::B); };
-	bool isReleasedButton3() const { return m_keyboard->isReleased(DIK_C) | m_xInput->isReleased(XInput::A); };
-	bool isReleasedButton4() const { return m_keyboard->isReleased(DIK_V) | m_xInput->isReleased(XInput::X); };
+	bool isReleasedButton1() const { return m_keyboard->isReleased(DIK_Z) | m_xInput->isReleased(XInput::Y); }
+	bool isReleasedButton2() const { return m_keyboard->isReleased(DIK_X) | m_xInput->isReleased(XInput::B); }
+	bool isReleasedButton3() const { return m_keyboard->isReleased(DIK_C) | m_xInput->isReleased(XInput::A); }
+	bool isReleasedButton4() const { return m_keyboard->isReleased(DIK_V) | m_xInput->isReleased(XInput::X); }
 	bool isReleasedUp()      const { return m_keyboard->isReleased(DIK_UP) | m_xInput->isReleased(XInput::Up); }
 	bool isReleasedDown()    const { return m_keyboard->isReleased(DIK_DOWN) | m_xInput->isReleased(XInput::Down); }
 	bool isReleasedLeft()    const { return m_keyboard->isReleased(DIK_LEFT) | m_xInput->isReleased(XInput::Left); }

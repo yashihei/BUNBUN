@@ -15,7 +15,7 @@
 
 Play::Play(GraphicDevicePtr graphic, SoundMgrPtr soundManager, InputMgrPtr inputManager, RandomPtr random) :
 m_graphicDevice(graphic), m_soundManager(soundManager), m_inputManager(inputManager), m_random(random),
-m_frameCount(0), m_score(0), m_level(1)
+m_frameCount(0), m_gameoverCount(0), m_score(0), m_level(1)
 {
 	m_player = std::make_shared<Player>(m_inputManager, m_graphicDevice->getDevice());
 	m_flail = std::make_shared<Flail>(m_player, m_graphicDevice->getDevice());
@@ -34,7 +34,12 @@ bool isHit(Vector2 pos1, Vector2 pos2, float radius1, float radius2) {
 }
 
 void Play::update() {
-	m_frameCount++;
+	if (m_player->getLife() == 0) {
+		m_gameoverCount++;
+		if (m_gameoverCount > 180)
+			changeScene(SceneType::Title);
+		return;
+	}
 
 	m_player->update();
 	m_flail->update();
@@ -42,6 +47,7 @@ void Play::update() {
 	m_bullets->update();
 	m_effects->update();
 
+	m_frameCount++;
 	if (m_frameCount % 1200 == 0) {
 		m_level = std::min(m_level + 1, 10);
 	}
@@ -51,7 +57,7 @@ void Play::update() {
 		while (true) {
 			pos = Vector2(m_random->next(640.0f), m_random->next(480.0f));
 			auto dis = pos - m_player->getPos();
-			if (std::abs(dis.length()) > 100)
+			if (std::abs(dis.length()) > 125)
 				break;
 		}
 		float r = m_random->next(1.0f);
@@ -110,8 +116,6 @@ void Play::update() {
 		}
 		m_bullets->clear();
 	}
-	if (m_player->getLife() == 0)
-		changeScene(SceneType::Title);
 }
 
 void Play::draw() {
@@ -132,4 +136,7 @@ void Play::draw() {
 	m_hudFont->drawStr("LIFE", { 10, 30 }, Color(0.6f, 1.0f, 0.6f, 1.0f).toD3Dcolor());
 	m_hudFont->drawStr(std::to_string(m_player->getLife()), { 60, 30 }, Color(1.0f, 0.6f, 0.6f, 1.0f).toD3Dcolor());
 	m_hudFont->drawStr("LEVEL " + std::to_string(m_level), { 640 - 100, 10 }, Color(0.6f, 1.0f, 0.6f, 1.0f).toD3Dcolor());
+
+	if (m_player->getLife() == 0)
+		m_hudFont->drawStr("GAME OVER", {265, 230});
 }
