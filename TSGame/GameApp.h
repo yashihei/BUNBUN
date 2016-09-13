@@ -1,20 +1,7 @@
 #pragma once
 #include <Windows.h>
 #include <memory>
-
-class GraphicDevice;
-class TextureManager;
-class SoundManager;
-class InputManager;
-class FPSControler;
-class Random;
-
-using GraphicDevicePtr = std::shared_ptr<GraphicDevice>;
-using TextureMgrPtr = std::shared_ptr<TextureManager>;
-using SoundMgrPtr = std::shared_ptr<SoundManager>;
-using InputMgrPtr = std::shared_ptr<InputManager>;
-using FPSControlerPtr = std::shared_ptr<FPSControler>;
-using RandomPtr = std::shared_ptr<Random>;
+#include "Fwd.h"
 
 class GameApp {
 public:

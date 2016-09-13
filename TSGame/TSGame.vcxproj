@@ -77,6 +77,7 @@
     <ClCompile Include="GameApp.cpp" />
     <ClCompile Include="Graphic.cpp" />
     <ClCompile Include="Input.cpp" />
+    <ClCompile Include="Play.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="Actors.cpp" />
     <ClCompile Include="Texture.cpp" />
@@ -91,9 +92,11 @@
     <ClInclude Include="Easing.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="FPS.h" />
+    <ClInclude Include="Fwd.h" />
     <ClInclude Include="GameApp.h" />
     <ClInclude Include="Graphic.h" />
     <ClInclude Include="Input.h" />
+    <ClInclude Include="Play.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="Random.h" />
     <ClInclude Include="Rect.h" />
@@ -101,6 +104,7 @@
     <ClInclude Include="Shape.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="Title.h" />
     <ClInclude Include="TSGame.h" />
     <ClInclude Include="Util.h" />
     <ClInclude Include="Vector2.h" />

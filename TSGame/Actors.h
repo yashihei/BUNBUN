@@ -1,15 +1,14 @@
 #pragma once
 #include <d3dx9.h>
 #include <deque>
-#include "TSGame.h"
 #include "Actor.h"
 #include "Vector2.h"
 #include "Color.h"
+#include "Fwd.h"
 
 class Player {
 public:
 	Player(InputMgrPtr inputManager, LPDIRECT3DDEVICE9 d3dDevice);
-	void init();
 	void update();
 	void draw();
 	void moveCtrl();
@@ -32,7 +31,6 @@ public:
 	Flail(PlayerPtr player, LPDIRECT3DDEVICE9 d3dDevice);
 	void update();
 	void draw();
-	void init();
 	Vector2 getPos() const { return m_pos; }
 	Vector2 getVec() const { return m_vec; }
 	float getRadius() const { return m_radius; }

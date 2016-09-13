@@ -13,13 +13,6 @@ m_pos(320, 240),
 m_stateCount(0), m_mutekiCount(0), m_life(3), m_state(State::Normal)
 {}
 
-void Player::init() {
-	m_pos = Vector2(320, 240);
-	m_stateCount = m_mutekiCount = 0;
-	m_life = 3;
-	m_state = State::Normal;
-}
-
 void Player::update() {
 	m_stateCount++; m_stateCount++; m_mutekiCount--;
 	
@@ -99,7 +92,7 @@ void Flail::update() {
 }
 
 void Flail::draw() {
-	auto color = HSV(0.20f - 0.15f/20 * m_vec.length(), 1.0f, 1.0f).toColor(0.6f);
+	auto color = HSV(0.18f - 0.15f/20 * m_vec.length(), 1.0f, 1.0f).toColor(0.6f);
 	auto dis = m_player->getPos() - m_pos;
 	for (int i = 0; i < 5; i++) {
 		Shape::drawCircle(m_d3dDevice, m_pos + dis/5.0f * i, 5.0f, color.toD3Dcolor());
@@ -111,13 +104,6 @@ void Flail::draw() {
 		cnt++;
 		Shape::drawCircle(m_d3dDevice, trail, m_radius - cnt*1.5f, color.setAlpha(0.6f / cnt).toD3Dcolor());
 	}
-}
-
-void Flail::init() {
-	m_radius = 25.0f;
-	m_pos = m_player->getPos();
-	m_vec = Vector2();
-	m_trails.clear();
 }
 
 Enemy::Enemy(Vector2 pos, EffectMgrPtr effects, LPDIRECT3DDEVICE9 d3dDevice) :

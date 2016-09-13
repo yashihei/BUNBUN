@@ -7,5 +7,15 @@ enum class SceneType {
 class Scene {
 public:
 	virtual ~Scene() = default;
-	virtual SceneType update() = 0;
+	virtual void update() = 0;
+	virtual void draw() = 0;
+	SceneType nextScene() {
+		return m_next;
+	}
+protected:
+	void changeScene(SceneType type) {
+		m_next = type;
+	}
+private:
+	SceneType m_next = SceneType::None;
 };
