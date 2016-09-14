@@ -23,7 +23,6 @@ m_frameCount(0), m_gameoverCount(0), m_score(0), m_level(1)
 	m_bullets = std::make_shared<ActorManager<Bullet>>();
 	m_effects = std::make_shared<ActorManager<Effect>>();
 	
-	Font::addFont("dat/orbitron-medium.otf");
 	m_hudFont = std::make_shared<Font>(20, "Orbitron", false, m_graphicDevice->getDevice());
 }
 
@@ -49,9 +48,9 @@ void Play::update() {
 
 	m_frameCount++;
 	if (m_frameCount % 1200 == 0) {
-		m_level = std::min(m_level + 1, 10);
+		m_level = std::min(m_level + 1, 20);
 	}
-	if (m_random->next(100 - m_level * 5) == 0 && m_enemies->size() < 10) {
+	if (m_random->next(100 - m_level * 5) == 0 && m_enemies->size() < (1 + m_level)) {
 		//プレイヤーから離れた場所に出現させる
 		Vector2 pos;
 		while (true) {
@@ -61,17 +60,20 @@ void Play::update() {
 				break;
 		}
 		float r = m_random->next(1.0f);
-		if (r < 0.05f) {
-			auto enemy = std::make_shared<GreenEnemy>(pos, m_player, m_effects, m_graphicDevice->getDevice());
+		if (m_level < 2) r -= 0.25f;
+		if (m_level < 4) r -= 0.15f;
+		if (m_level < 6) r -= 0.05f;
+		if (r < 0.75f) {
+			auto enemy = std::make_shared<RedEnemy>(pos, m_player, m_effects, m_graphicDevice->getDevice());
 			m_enemies->add(enemy);
-		} else if (r < 0.15f) {
-			auto enemy = std::make_shared<PurpleEnemy>(pos, 40.0f, m_player, m_effects, m_graphicDevice->getDevice());
-			m_enemies->add(enemy);
-		} else if (r < 0.25f) {
+		} else if (r < 0.85f) {
 			auto enemy = std::make_shared<OrangeEnemy>(pos, m_player, m_bullets, m_effects, m_graphicDevice->getDevice());
 			m_enemies->add(enemy);
+		} else if (r < 0.95f) {
+			auto enemy = std::make_shared<PurpleEnemy>(pos, 40.0f, m_player, m_effects, m_graphicDevice->getDevice());
+			m_enemies->add(enemy);
 		} else {
-			auto enemy = std::make_shared<RedEnemy>(pos, m_player, m_effects, m_graphicDevice->getDevice());
+			auto enemy = std::make_shared<GreenEnemy>(pos, m_player, m_effects, m_graphicDevice->getDevice());
 			m_enemies->add(enemy);
 		}
 	}
@@ -85,7 +87,7 @@ void Play::update() {
 		//hit wall?
 		auto pos = enemy->getPos();
 		if (pos.x < 0 || pos.x > 640 || pos.y < 0 || pos.y > 480) {
-			m_score += 100;
+			m_score += enemy->getScore() * m_level;
 			enemy->kill();
 			auto effect = std::make_shared<Effect>(enemy->getPos(), enemy->getColor().setAlpha(1.0f), 75.0f, m_graphicDevice->getDevice());
 			m_effects->add(effect);
@@ -132,11 +134,11 @@ void Play::draw() {
 	m_bullets->draw();
 
 	//draw hud
-	m_hudFont->drawStr("SCORE " + std::to_string(m_score), { 10, 10 }, Color(0.6f, 1.0f, 0.6f, 1.0f).toD3Dcolor());
-	m_hudFont->drawStr("LIFE", { 10, 30 }, Color(0.6f, 1.0f, 0.6f, 1.0f).toD3Dcolor());
-	m_hudFont->drawStr(std::to_string(m_player->getLife()), { 60, 30 }, Color(1.0f, 0.6f, 0.6f, 1.0f).toD3Dcolor());
-	m_hudFont->drawStr("LEVEL " + std::to_string(m_level), { 640 - 100, 10 }, Color(0.6f, 1.0f, 0.6f, 1.0f).toD3Dcolor());
+	m_hudFont->drawStr("SCORE " + std::to_string(m_score), { 10, 10 }, Color(0.6f, 1.0f, 0.6f, 0.9f).toD3Dcolor());
+	m_hudFont->drawStr("LIFE", { 10, 30 }, Color(0.6f, 1.0f, 0.6f, 0.8f).toD3Dcolor());
+	m_hudFont->drawStr(std::to_string(m_player->getLife()), { 60, 30 }, Color(1.0f, 0.6f, 0.6f, 0.9f).toD3Dcolor());
+	m_hudFont->drawStr("LEVEL " + std::to_string(m_level), { 640 - 100, 10 }, Color(0.6f, 1.0f, 0.6f, 0.9f).toD3Dcolor());
 
 	if (m_player->getLife() == 0)
-		m_hudFont->drawStr("GAME OVER", {265, 230});
+		m_hudFont->drawStr("GAME OVER", { 265, 230 });
 }

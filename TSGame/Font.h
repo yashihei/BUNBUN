@@ -22,6 +22,9 @@ public:
 		RECT rect = { pos.x, pos.y, 0, 0 };
 		m_font->DrawText(NULL, str.c_str(), -1, &rect, DT_NOCLIP, color);
 	}
+	void drawStrToCenter(std::string str, RECT rect, D3DCOLOR color = 0xFFFFFFFF) {
+		m_font->DrawText(NULL, str.c_str(), -1, &rect, DT_CENTER, color);
+	}
 
 	static void addFont(std::string filePath) {
 		if (AddFontResourceEx(filePath.c_str(), FR_PRIVATE, NULL) == 0) {

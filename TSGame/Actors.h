@@ -51,6 +51,7 @@ public:
 	Vector2 getPos() const { return m_pos; }
 	Color getColor() const { return m_color; }
 	float getSize() const { return m_size; }
+	int getScore() const { return m_score; }
 	bool isBooting() const { return m_boot; }
 protected:
 	LPDIRECT3DDEVICE9 m_d3dDevice;
@@ -58,7 +59,7 @@ protected:
 	Vector2 m_pos, m_vec;
 	Color m_color;
 	float m_rad, m_size;
-	int m_frameCount, m_damageCount;
+	int m_frameCount, m_damageCount, m_score;
 	bool m_boot;
 };
 

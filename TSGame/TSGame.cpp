@@ -1,6 +1,7 @@
 #include "TSGame.h"
 
 #include "Font.h"
+#include "Sound.h"
 #include "Title.h"
 #include "Play.h"
 
