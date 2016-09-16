@@ -70,7 +70,7 @@ void Play::update() {
 			auto enemy = std::make_shared<OrangeEnemy>(pos, m_player, m_bullets, m_effects, m_graphicDevice->getDevice());
 			m_enemies->add(enemy);
 		} else if (r < 0.95f) {
-			auto enemy = std::make_shared<PurpleEnemy>(pos, 40.0f, m_player, m_effects, m_graphicDevice->getDevice());
+			auto enemy = std::make_shared<PurpleEnemy>(pos, 60.0f, m_player, m_effects, m_graphicDevice->getDevice());
 			m_enemies->add(enemy);
 		} else {
 			auto enemy = std::make_shared<GreenEnemy>(pos, m_player, m_effects, m_graphicDevice->getDevice());
@@ -79,7 +79,7 @@ void Play::update() {
 	}
 	//enemy vs flail
 	for (auto& enemy : *m_enemies) {
-		if (enemy->canAttack() && isHit(enemy->getPos(), m_flail->getPos(), enemy->getSize() - 10, m_flail->getRadius())) {
+		if (enemy->canAttack() && isHit(enemy->getPos(), m_flail->getPos(), enemy->getSize()/2, m_flail->getRadius())) {
 			auto dis = enemy->getPos() - m_player->getPos();
 			auto len = m_flail->getVec().length();
 			enemy->blowOff(dis.normalized() * len);

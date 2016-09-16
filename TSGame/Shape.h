@@ -57,6 +57,9 @@ namespace Shape {
 		d3dDevice->SetFVF(D3DFVF_XYZRHW | D3DFVF_DIFFUSE);
 		d3dDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, vtx.data(), sizeof(ShapeVertex));
 	}
+	inline void drawSquare(LPDIRECT3DDEVICE9 d3dDevice, Vector2 pos, float size, float rad, D3DXCOLOR color = 0xFFFFFFFF) {
+		drawRectangle(d3dDevice, pos, size, size, rad, color);
+	}
 	inline void drawNgon(LPDIRECT3DDEVICE9 d3dDevice, Vector2 pos, int num, float radius, float radian, D3DXCOLOR color = 0xFFFFFFFF) {
 		std::vector<ShapeVertex> vtx(num, { { 0, 0, 0 }, 1, color });
 		for (int i = 0; i < num; i++) {

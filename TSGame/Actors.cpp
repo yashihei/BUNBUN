@@ -15,11 +15,11 @@ m_stateCount(0), m_mutekiCount(180), m_life(3), m_state(State::Normal)
 {}
 
 void Player::update() {
-	m_stateCount++; m_stateCount++; m_mutekiCount--;
+	m_stateCount++; m_mutekiCount--;
 	
 	switch (m_state) {
 	case State::Boot:
-		if (m_stateCount == 60) {
+		if (m_stateCount == 30) {
 			m_stateCount = 0;
 			m_mutekiCount = 180;
 			m_state = State::Normal;
@@ -29,7 +29,7 @@ void Player::update() {
 		moveCtrl();
 		break;
 	case State::Damage:
-		if (m_stateCount == 120) {
+		if (m_stateCount == 60) {
 			m_stateCount = 0;
 			m_state = State::Boot;
 			m_life--;
@@ -54,8 +54,8 @@ void Player::draw() {
 	switch (m_state) {
 		case State::Boot: {
 			//TODO:line circle
-			float radius = Easing::OutQuint(m_stateCount, 60, 300, 10);
-			Color color = HSV(0.7f, Easing::InQuint(m_stateCount, 60, 0.0, 1.0), 1.0f).toColor(Easing::OutQuint(m_stateCount, 60, 0.0, 0.5));
+			float radius = Easing::OutQuint(m_stateCount, 30, 300, 10);
+			Color color = HSV(0.7f, Easing::InQuint(m_stateCount, 30, 0.0, 1.0), 1.0f).toColor(Easing::OutQuint(m_stateCount, 30, 0.0, 0.5));
 			Shape::drawCircle(m_d3dDevice, m_pos, radius, color.toD3Dcolor());
 			break;
 		}
@@ -68,7 +68,7 @@ void Player::draw() {
 			break;
 		}
 		case State::Damage: {
-			float alpha = Easing::OutQuint(m_stateCount, 120, 0.7, 0.0);
+			float alpha = Easing::OutQuint(m_stateCount, 60, 0.7, 0.0);
 			Shape::drawCircle(m_d3dDevice, m_pos, 10.0f, Color(0.5f, 0.5f, 1.0f, alpha).toD3Dcolor());
 			Shape::drawCircle(m_d3dDevice, m_pos, 5.0f, Color(0.7f, 0.7f, 1.0f, alpha).toD3Dcolor());
 			break;
@@ -132,11 +132,11 @@ void Enemy::update() {
 
 void Enemy::draw() {
 	if (m_boot) {
-		Shape::drawNgon(m_d3dDevice, m_pos, 4, m_size/30 * m_frameCount, m_rad, m_color.toD3Dcolor());
+		Shape::drawSquare(m_d3dDevice, m_pos, m_size/30 * m_frameCount, m_rad, m_color.toD3Dcolor());
 		return;
 	}
-	Shape::drawNgon(m_d3dDevice, m_pos, 4, m_size/2, m_rad, Color(1.0f, 1.0f, 1.0f, 0.5f).toD3Dcolor());
-	Shape::drawNgon(m_d3dDevice, m_pos, 4, m_size, m_rad, m_color.toD3Dcolor());
+	Shape::drawSquare(m_d3dDevice, m_pos, m_size/2, m_rad, Color(1.0f, 1.0f, 1.0f, 0.5f).toD3Dcolor());
+	Shape::drawSquare(m_d3dDevice, m_pos, m_size, m_rad, m_color.toD3Dcolor());
 }
 
 void Enemy::blowOff(Vector2 vec) {
@@ -148,7 +148,7 @@ RedEnemy::RedEnemy(Vector2 pos, PlayerPtr player, EffectMgrPtr effects, LPDIRECT
 Enemy(pos, effects, d3dDevice), m_player(player)
 {
 	m_color = Color(1.0f, 0.3f, 0.3f, 0.6f);
-	m_size = 20.0f;
+	m_size = 30.0f;
 	m_score = 100;
 }
 
@@ -165,7 +165,7 @@ OrangeEnemy::OrangeEnemy(Vector2 pos, PlayerPtr player, BulletMgrPtr bullets, Ef
 Enemy(pos, effects, d3dDevice), m_player(player), m_bullets(bullets)
 {
 	m_color = Color(1.0f, 0.5f, 0.0f, 0.6f);
-	m_size = 20.0f;
+	m_size = 30.0f;
 	m_score = 150;
 }
 
@@ -191,7 +191,7 @@ GreenEnemy::GreenEnemy(Vector2 pos, PlayerPtr player, EffectMgrPtr effects, LPDI
 Enemy(pos, effects, d3dDevice), m_player(player)
 {
 	m_color = Color(0.5f, 1.0f, 0.5f, 0.5f);
-	m_size = 20.0f;
+	m_size = 30.0f;
 	m_score = 300;
 }
 
@@ -221,8 +221,8 @@ void PurpleEnemy::update() {
 	m_pos += Vector2::fromAngle(dis.toAngle()) * 1.0f + m_vec;
 
 	if (m_pos.x < 0 || m_pos.x > 640 || m_pos.y < 0 || m_pos.y > 480) {
-		if (m_size == 20.0f) return;
-		m_size -= 10.0f;
+		if (m_size == 30.0f) return;
+		m_size -= 15.0f;
 		m_vec *= -0.5f;
 		m_pos = Vector2(clamp(m_pos.x, 0.0f, 640.0f), clamp(m_pos.y, 0.0f, 480.0f));
 	}
