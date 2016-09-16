@@ -8,7 +8,6 @@
 #include "Input.h"
 #include "Util.h"
 #include "Shape.h"
-#include "Vector2.h"
 
 class Title : public Scene {
 public:
@@ -42,6 +41,7 @@ public:
 	void draw() override {
 		//background
 		m_titleFont->drawStr("BUN BUN", { 10, 200 }, Color(1.0f, 0.5f, 0.0f, 1.0f).toD3Dcolor());
+
 		Shape::drawRectangle(m_graphicDevice->getDevice(), {0.0f, 250 + m_select*20.0f}, {640.0f, 270 + m_select*20.0f}, Color(1.0f, 1.0f, 1.0f, 1.0f).toD3Dcolor());
 		const std::vector<std::string> texts = { "START GAME", "HOW TO PLAY", "RANKING", "EXIT" };
 		for (int i = 0; i < texts.size(); i++) {

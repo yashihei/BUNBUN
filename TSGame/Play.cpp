@@ -79,7 +79,7 @@ void Play::update() {
 	}
 	//enemy vs flail
 	for (auto& enemy : *m_enemies) {
-		if (!enemy->isBooting() && isHit(enemy->getPos(), m_flail->getPos(), enemy->getSize() - 10, m_flail->getRadius())) {
+		if (enemy->canAttack() && isHit(enemy->getPos(), m_flail->getPos(), enemy->getSize() - 10, m_flail->getRadius())) {
 			auto dis = enemy->getPos() - m_player->getPos();
 			auto len = m_flail->getVec().length();
 			enemy->blowOff(dis.normalized() * len);
@@ -135,7 +135,7 @@ void Play::draw() {
 
 	//draw hud
 	m_hudFont->drawStr("SCORE " + std::to_string(m_score), { 10, 10 }, Color(0.6f, 1.0f, 0.6f, 0.9f).toD3Dcolor());
-	m_hudFont->drawStr("LIFE", { 10, 30 }, Color(0.6f, 1.0f, 0.6f, 0.8f).toD3Dcolor());
+	m_hudFont->drawStr("LIFE", { 10, 30 }, Color(0.5f, 1.0f, 0.5f, 0.9f).toD3Dcolor());
 	m_hudFont->drawStr(std::to_string(m_player->getLife()), { 60, 30 }, Color(1.0f, 0.6f, 0.6f, 0.9f).toD3Dcolor());
 	m_hudFont->drawStr("LEVEL " + std::to_string(m_level), { 640 - 100, 10 }, Color(0.6f, 1.0f, 0.6f, 0.9f).toD3Dcolor());
 

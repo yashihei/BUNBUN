@@ -6,6 +6,7 @@
 #include "Util.h"
 #include "Easing.h"
 #include "Font.h"
+#include "Sound.h"
 
 Player::Player(InputMgrPtr inputManager, LPDIRECT3DDEVICE9 d3dDevice) :
 m_inputManager(inputManager), m_d3dDevice(d3dDevice),
@@ -77,10 +78,12 @@ void Player::draw() {
 
 Flail::Flail(PlayerPtr player, LPDIRECT3DDEVICE9 d3dDevice) :
 m_player(player), m_d3dDevice(d3dDevice),
-m_pos(m_player->getPos()), m_vec(), m_radius(25.0f)
+m_pos(m_player->getPos()), m_vec(), m_radius(25.0f), m_frameCount(0)
 {}
 
 void Flail::update() {
+	m_frameCount++;
+
 	auto dis = m_player->getPos() - m_pos;
 	m_vec += dis / 50;
 	m_vec *= 0.97f;
@@ -101,6 +104,7 @@ void Flail::draw() {
 	int cnt = 0;
 	for (auto& trail : m_trails) {
 		cnt++;
+		//Ngon‚Å‚à‚¢‚¢‚©‚à
 		Shape::drawCircle(m_d3dDevice, trail, m_radius - cnt*1.5f, color.setAlpha(0.6f / cnt).toD3Dcolor());
 	}
 }
@@ -136,7 +140,6 @@ void Enemy::draw() {
 }
 
 void Enemy::blowOff(Vector2 vec) {
-	if (m_damageCount > 0) return;
 	m_damageCount = 10;
 	m_vec += vec;
 }
@@ -144,7 +147,7 @@ void Enemy::blowOff(Vector2 vec) {
 RedEnemy::RedEnemy(Vector2 pos, PlayerPtr player, EffectMgrPtr effects, LPDIRECT3DDEVICE9 d3dDevice) :
 Enemy(pos, effects, d3dDevice), m_player(player)
 {
-	m_color = Color(1.0f, 0.3f, 0.3f, 0.5f);
+	m_color = Color(1.0f, 0.3f, 0.3f, 0.6f);
 	m_size = 20.0f;
 	m_score = 100;
 }

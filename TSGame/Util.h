@@ -12,6 +12,8 @@ template <typename Container, typename Pred> inline void Erase_if(Container& c, 
 	c.erase(std::remove_if(c.begin(), c.end(), pred), c.end());
 }
 template <typename Type> inline void OutputDebugValue(const Type& value) {
+#ifdef _DEBUG
 	OutputDebugString(std::to_string(value).c_str());
 	OutputDebugString("\n");
+#endif
 }

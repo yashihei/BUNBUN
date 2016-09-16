@@ -37,9 +37,9 @@ void SoundManager::load(std::string filePath, std::string alias) {
 	m_sounds[alias] = sound;
 }
 
-void SoundManager::play(std::string alias, bool loop) {
+void SoundManager::play(std::string alias, float volume, bool loop) {
 	m_sounds[alias]->init(loop);
-	m_sounds[alias]->play();
+	m_sounds[alias]->play(volume);
 }
 
 void SoundManager::stop(std::string alias) { 
@@ -53,12 +53,14 @@ Sound::Sound(std::string filePath, IXAudio2* xAudio) : m_xAudio(xAudio), m_sourc
 Sound::~Sound() {
 	if (m_sourceVoice) {
 		m_sourceVoice->Stop();
+		m_sourceVoice->FlushSourceBuffers();
 		m_sourceVoice->DestroyVoice();
 	}
 }
 
 void Sound::init(bool loop) {
 	//TODO:–³‘Ê‚È‚±‚Æ‚µ‚Ä‚È‚¢‚©’²¸
+	//FIXME:DebugMode‚¾‚Æmastervoice->destroy‚ÅƒGƒ‰[“f‚­
 	HRESULT hr = m_xAudio->CreateSourceVoice(&m_sourceVoice, &m_soundBuffer->waveFormatEx);
 	if (FAILED(hr))
 		throw std::runtime_error("Error creating source voice");
@@ -72,7 +74,8 @@ void Sound::init(bool loop) {
 	m_sourceVoice->SubmitSourceBuffer(&buffer);
 }
 
-void Sound::play() {
+void Sound::play(float volume) {
+	m_sourceVoice->SetVolume(volume);
 	m_sourceVoice->Start();
 }
 

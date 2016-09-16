@@ -39,6 +39,7 @@ private:
 	LPDIRECT3DDEVICE9 m_d3dDevice;
 	Vector2 m_pos, m_vec;
 	float m_radius;
+	int m_frameCount;
 	std::deque<Vector2> m_trails;
 };
 
@@ -52,7 +53,7 @@ public:
 	Color getColor() const { return m_color; }
 	float getSize() const { return m_size; }
 	int getScore() const { return m_score; }
-	bool isBooting() const { return m_boot; }
+	bool canAttack() const { return m_boot | (m_damageCount > 0) ? false : true; }
 protected:
 	LPDIRECT3DDEVICE9 m_d3dDevice;
 	EffectMgrPtr m_effects;
