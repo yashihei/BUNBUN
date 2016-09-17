@@ -45,7 +45,7 @@ private:
 
 class Enemy : public Actor {
 public:
-	Enemy(Vector2 pos, EffectMgrPtr effects, LPDIRECT3DDEVICE9 d3dDevice);
+	Enemy(Vector2 pos, PlayerPtr player, EffectMgrPtr effects, LPDIRECT3DDEVICE9 d3dDevice);
 	void update() override;
 	void draw() override;
 	void blowOff(Vector2 vec);
@@ -56,6 +56,7 @@ public:
 	bool canAttack() const { return m_boot | (m_damageCount > 0) ? false : true; }
 protected:
 	LPDIRECT3DDEVICE9 m_d3dDevice;
+	PlayerPtr m_player;
 	EffectMgrPtr m_effects;
 	Vector2 m_pos, m_vec;
 	Color m_color;
@@ -68,8 +69,6 @@ class RedEnemy : public Enemy {
 public:
 	RedEnemy(Vector2 pos, PlayerPtr player, EffectMgrPtr effects, LPDIRECT3DDEVICE9 d3dDevice);
 	void update() override;
-private:
-	PlayerPtr m_player;
 };
 
 class Bullet;
@@ -78,7 +77,6 @@ public:
 	OrangeEnemy(Vector2 pos, PlayerPtr player, BulletMgrPtr bullets, EffectMgrPtr effects, LPDIRECT3DDEVICE9 d3dDevice);
 	void update() override;
 private:
-	PlayerPtr m_player;
 	BulletMgrPtr m_bullets;
 };
 
@@ -86,16 +84,12 @@ class GreenEnemy : public Enemy {
 public:
 	GreenEnemy(Vector2 pos, PlayerPtr player, EffectMgrPtr effects, LPDIRECT3DDEVICE9 d3dDevice);
 	void update() override;
-private:
-	PlayerPtr m_player;
 };
 
 class PurpleEnemy : public Enemy {
 public:
 	PurpleEnemy(Vector2 pos, float size, PlayerPtr player, EffectMgrPtr effects, LPDIRECT3DDEVICE9 d3dDevice);
 	void update() override;
-private:
-	PlayerPtr m_player;
 };
 
 class Bullet : public Actor {

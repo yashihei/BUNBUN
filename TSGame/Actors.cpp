@@ -53,7 +53,6 @@ void Player::clash() {
 void Player::draw() {
 	switch (m_state) {
 		case State::Boot: {
-			//TODO:line circle
 			float radius = Easing::OutQuint(m_stateCount, 30, 300, 10);
 			Color color = HSV(0.7f, Easing::InQuint(m_stateCount, 30, 0.0, 1.0), 1.0f).toColor(Easing::OutQuint(m_stateCount, 30, 0.0, 0.5));
 			Shape::drawCircle(m_d3dDevice, m_pos, radius, color.toD3Dcolor());
@@ -109,8 +108,9 @@ void Flail::draw() {
 	}
 }
 
-Enemy::Enemy(Vector2 pos, EffectMgrPtr effects, LPDIRECT3DDEVICE9 d3dDevice) :
+Enemy::Enemy(Vector2 pos, PlayerPtr player, EffectMgrPtr effects, LPDIRECT3DDEVICE9 d3dDevice) :
 m_d3dDevice(d3dDevice),
+m_player(player),
 m_effects(effects),
 m_pos(pos), m_vec(),
 m_color(), m_rad(0), m_frameCount(0), m_damageCount(0), m_boot(true)
@@ -145,7 +145,7 @@ void Enemy::blowOff(Vector2 vec) {
 }
 
 RedEnemy::RedEnemy(Vector2 pos, PlayerPtr player, EffectMgrPtr effects, LPDIRECT3DDEVICE9 d3dDevice) :
-Enemy(pos, effects, d3dDevice), m_player(player)
+Enemy(pos, player, effects, d3dDevice)
 {
 	m_color = Color(1.0f, 0.3f, 0.3f, 0.6f);
 	m_size = 30.0f;
@@ -162,7 +162,7 @@ void RedEnemy::update() {
 }
 
 OrangeEnemy::OrangeEnemy(Vector2 pos, PlayerPtr player, BulletMgrPtr bullets, EffectMgrPtr effects, LPDIRECT3DDEVICE9 d3dDevice) :
-Enemy(pos, effects, d3dDevice), m_player(player), m_bullets(bullets)
+Enemy(pos, player, effects, d3dDevice), m_bullets(bullets)
 {
 	m_color = Color(1.0f, 0.5f, 0.0f, 0.6f);
 	m_size = 30.0f;
@@ -188,7 +188,7 @@ void OrangeEnemy::update() {
 }
 
 GreenEnemy::GreenEnemy(Vector2 pos, PlayerPtr player, EffectMgrPtr effects, LPDIRECT3DDEVICE9 d3dDevice) :
-Enemy(pos, effects, d3dDevice), m_player(player)
+Enemy(pos, player, effects, d3dDevice)
 {
 	m_color = Color(0.5f, 1.0f, 0.5f, 0.5f);
 	m_size = 30.0f;
@@ -205,7 +205,7 @@ void GreenEnemy::update() {
 }
 
 PurpleEnemy::PurpleEnemy(Vector2 pos, float size, PlayerPtr player, EffectMgrPtr effects, LPDIRECT3DDEVICE9 d3dDevice) :
-Enemy(pos, effects, d3dDevice), m_player(player)
+Enemy(pos, player, effects, d3dDevice)
 {
 	m_color = Color(1.0f, 0.3f, 0.8f, 0.5f);
 	m_size = size;
