@@ -16,7 +16,7 @@ public:
 	m_frameCount(0), m_changeCount(0), m_select(0), m_changeFlag(false)
 	{
 		m_titleFont = std::make_shared<Font>(50, "Orbitron", false, m_graphicDevice->getDevice());
-		m_textFont = std::make_shared<Font>(20, "Orbitron", false, m_graphicDevice->getDevice());
+		m_textFont = std::make_shared<Font>(25, "Orbitron", false, m_graphicDevice->getDevice());
 	}
 	void update() override {
 		m_frameCount++;
@@ -39,14 +39,13 @@ public:
 			m_select = wrap(m_select + 1, 0, 4);
 	}
 	void draw() override {
-		//background
 		m_titleFont->drawStr("BUN BUN", { 10, 200 }, Color(1.0f, 0.5f, 0.0f, 1.0f).toD3Dcolor());
 
-		Shape::drawRectangle(m_graphicDevice->getDevice(), {0.0f, 250 + m_select*20.0f}, {640.0f, 270 + m_select*20.0f}, Color(1.0f, 1.0f, 1.0f, 1.0f).toD3Dcolor());
+		Shape::drawRectangle(m_graphicDevice->getDevice(), {0.0f, 250 + m_select*25.0f}, {640.0f, 275 + m_select*25.0f}, Color(1.0f, 1.0f, 1.0f, 1.0f).toD3Dcolor());
 		const std::vector<std::string> texts = { "START GAME", "HOW TO PLAY", "RANKING", "EXIT" };
 		for (int i = 0; i < texts.size(); i++) {
 			auto color = (i == m_select) ? Color(0.0f, 0.0f, 0.0f, std::abs(std::sin(D3DX_PI/30*m_frameCount))) : Color(1.0f, 1.0f, 1.0f, 1.0f);
-			m_textFont->drawStr(texts[i], { 10, 250 + (i * 20) }, color.toD3Dcolor());
+			m_textFont->drawStr(texts[i], { 10, 250 + (i * 25) }, color.toD3Dcolor());
 		}
 		//fadeout
 		Shape::drawRectangle(m_graphicDevice->getDevice(), { 0.0f, 0.0f }, { 640.0f, 480.0f }, Color(0.0f, 0.0f, 0.0f, 1.0f / 60 * m_changeCount).toD3Dcolor());

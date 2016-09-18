@@ -140,5 +140,5 @@ void Play::draw() {
 	m_hudFont->drawStr("LEVEL " + std::to_string(m_level), { 640 - 100, 10 }, Color(0.6f, 1.0f, 0.6f, 0.9f).toD3Dcolor());
 
 	if (m_player->getLife() == 0)
-		m_hudFont->drawStr("GAME OVER", { 265, 230 });
+		m_hudFont->drawStr("GAME OVER", { 265, m_gameoverCount < 120 ? (int)Easing::OutBounce(m_gameoverCount, 120, 0, 230) : 230 });
 }
