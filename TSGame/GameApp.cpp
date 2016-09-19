@@ -7,10 +7,10 @@
 #include "FPS.h"
 #include "Random.h"
 
-GameApp::GameApp(HWND hWnd, HINSTANCE hInstance) :
+GameApp::GameApp(HWND hWnd, HINSTANCE hInstance, bool fullScreen) :
 m_frameCount(0)
 {
-	m_graphicDevice = std::make_shared<GraphicDevice>(hWnd);
+	m_graphicDevice = std::make_shared<GraphicDevice>(hWnd, fullScreen);
 	m_textureManager = std::make_shared<TextureManager>(m_graphicDevice->getDevice());
 	m_soundManager = std::make_shared<SoundManager>();
 	m_inputManager = std::make_shared<InputManager>(hWnd, hInstance);

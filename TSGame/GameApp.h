@@ -5,7 +5,7 @@
 
 class GameApp {
 public:
-	GameApp(HWND hWnd, HINSTANCE hInstance);
+	GameApp(HWND hWnd, HINSTANCE hInstance, bool fullScreen);
 	virtual ~GameApp() = default;
 	void run();
 protected:

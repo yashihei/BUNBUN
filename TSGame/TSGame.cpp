@@ -5,8 +5,8 @@
 #include "Title.h"
 #include "Play.h"
 
-TSGame::TSGame(HWND hWnd, HINSTANCE hInstance) :
-GameApp(hWnd, hInstance)
+TSGame::TSGame(HWND hWnd, HINSTANCE hInstance, bool fullScreen) :
+GameApp(hWnd, hInstance, fullScreen)
 {
 	Font::addFont("dat/orbitron-medium.otf");
 	changeScene(SceneType::Title);

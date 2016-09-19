@@ -4,16 +4,22 @@
 #include <stdexcept>
 #include "Texture.h"
 
-GraphicDevice::GraphicDevice(HWND hWnd) : m_d3d(NULL), m_d3dDevice(NULL) {
+GraphicDevice::GraphicDevice(HWND hWnd, bool fullScreen) : m_d3d(NULL), m_d3dDevice(NULL) {
 	if ((m_d3d = Direct3DCreate9(D3D_SDK_VERSION)) == NULL) {
 		throw std::runtime_error("Error initialize Direct3D");
 	}
 
 	D3DPRESENT_PARAMETERS d3dpp = {};
 	//windowÇÃèÍçáÅAwidth, heightÇÕé©ìÆÇ≈ê›íËÇ≥ÇÍÇÈ
-	d3dpp.Windowed = TRUE;
+	if (fullScreen) {
+		d3dpp.BackBufferWidth = 640;
+		d3dpp.BackBufferHeight = 480;
+		d3dpp.BackBufferFormat = D3DFMT_X8R8G8B8;
+	} else {
+		d3dpp.BackBufferFormat = D3DFMT_UNKNOWN;
+	}
+	d3dpp.Windowed = !fullScreen;
 	d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
-	d3dpp.BackBufferFormat = D3DFMT_UNKNOWN;
 	d3dpp.EnableAutoDepthStencil = TRUE;
 	d3dpp.AutoDepthStencilFormat = D3DFMT_D16;
 	//êÇíºìØä˙ñ≥éã

@@ -7,7 +7,7 @@
 
 class TSGame : public GameApp {
 public:
-	TSGame(HWND hWnd, HINSTANCE hInstance);
+	TSGame(HWND hWnd, HINSTANCE hInstance, bool fullScreen);
 	void update() override;
 	void draw() override;
 private:

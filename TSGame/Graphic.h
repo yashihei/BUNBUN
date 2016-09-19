@@ -4,7 +4,7 @@
 
 class GraphicDevice {
 public:
-	explicit GraphicDevice(HWND hWnd);
+	explicit GraphicDevice(HWND hWnd, bool fullScreen);
 	~GraphicDevice();
 
 	HRESULT beginScene();

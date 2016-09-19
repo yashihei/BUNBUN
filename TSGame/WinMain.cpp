@@ -16,13 +16,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	MSG msg = {};
 	HWND hWnd = NULL;
 
+	bool fullScreen = false;
+	int answer = MessageBox(NULL, TEXT("フルスクリーンで起動しますか？"), TEXT("BUNBUN"), MB_YESNO | MB_ICONQUESTION);
+	if (answer == IDYES)
+		fullScreen = true;
+
 	if (!registerMyClass(hInstance))
 		return 0;
-	if (!createWindow(hInstance, nCmdShow, &hWnd, 640, 480, false))
+	if (!createWindow(hInstance, nCmdShow, &hWnd, 640, 480, fullScreen))
 		return 0;
 
 	try {
-		auto game = std::make_unique<TSGame>(hWnd, hInstance);
+		auto game = std::make_unique<TSGame>(hWnd, hInstance, fullScreen);
 
 		while (true) {
 			if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
