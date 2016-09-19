@@ -23,5 +23,5 @@ private:
 	BulletMgrPtr m_bullets;
 	EffectMgrPtr m_effects;
 	FontPtr m_hudFont;
-	int m_frameCount, m_gameoverCount, m_score, m_level;
+	int m_frameCount, m_gameoverCount, m_score, m_viewScore, m_level;
 };

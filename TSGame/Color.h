@@ -20,6 +20,7 @@ struct Color {
 	}
 };
 
+//from:http://www.demoscene.jp/?p=1460
 struct HSV {
 	HSV(float h_, float s_, float v_) : h(h_), s(s_), v(v_) {}
 	float h;// ... 0Åã==0.0f, 360Åã==1.0f ...

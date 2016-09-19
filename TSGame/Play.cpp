@@ -15,7 +15,7 @@
 
 Play::Play(GraphicDevicePtr graphic, SoundMgrPtr soundManager, InputMgrPtr inputManager, RandomPtr random) :
 m_graphicDevice(graphic), m_soundManager(soundManager), m_inputManager(inputManager), m_random(random),
-m_frameCount(0), m_gameoverCount(0), m_score(0), m_level(1)
+m_frameCount(0), m_gameoverCount(0), m_score(0), m_viewScore(0), m_level(1)
 {
 	m_player = std::make_shared<Player>(m_inputManager, m_graphicDevice->getDevice());
 	m_flail = std::make_shared<Flail>(m_player, m_graphicDevice->getDevice());
@@ -46,6 +46,8 @@ void Play::update() {
 	m_bullets->update();
 	m_effects->update();
 
+	if (m_viewScore < m_score)
+		m_viewScore += (m_score - m_viewScore) / 10 + 1;
 	m_frameCount++;
 	if (m_frameCount % 1200 == 0) {
 		m_level = std::min(m_level + 1, 20);
@@ -122,10 +124,14 @@ void Play::update() {
 
 void Play::draw() {
 	//draw background
-	for (int i = 0; i < 16; i++)
-		Shape::drawLine(m_graphicDevice->getDevice(), { i*40.0f, 0.0f }, { i*40.0f, 480.0f }, 1.0f, Color(0.75f, 0.75f, 1.0f, 0.125f).toD3Dcolor());
-	for (int i = 0; i < 12; i++)
-		Shape::drawLine(m_graphicDevice->getDevice(), { 0.0f, i*40.0f }, { 640.f, i*40.0f }, 1.0f, Color(0.75f, 0.75f, 1.0f, 0.125f).toD3Dcolor());
+	for (int i = 1; i < 16; i++) {
+		Shape::drawRectangle(m_graphicDevice->getDevice(), { i*40.0f-0.5f, 0.0f }, { i*40.0f+0.5f, 480.0f }, Color(0.5f, 0.5f, 1.0f, 0.15f).toD3Dcolor());
+		Shape::drawRectangle(m_graphicDevice->getDevice(), { i*40.0f-1.5f, 0.0f }, { i*40.0f+1.5f, 480.0f }, Color(0.5f, 0.5f, 1.0f, 0.075f).toD3Dcolor());
+	}
+	for (int i = 1; i < 12; i++) {
+		Shape::drawRectangle(m_graphicDevice->getDevice(), { 0.0f, i*40.0f-0.5f }, { 640.0f, i*40.0f+0.5f }, Color(0.5f, 0.5f, 1.0f, 0.15f).toD3Dcolor());
+		Shape::drawRectangle(m_graphicDevice->getDevice(), { 0.0f, i*40.0f-1.5f }, { 640.0f, i*40.0f+1.5f }, Color(0.5f, 0.5f, 1.0f, 0.075f).toD3Dcolor());
+	}
 
 	m_effects->draw();
 	m_flail->draw();
@@ -134,7 +140,7 @@ void Play::draw() {
 	m_bullets->draw();
 
 	//draw hud
-	m_hudFont->drawStr("SCORE " + std::to_string(m_score), { 10, 10 }, Color(0.6f, 1.0f, 0.6f, 0.9f).toD3Dcolor());
+	m_hudFont->drawStr("SCORE " + std::to_string(m_viewScore), { 10, 10 }, Color(0.6f, 1.0f, 0.6f, 0.9f).toD3Dcolor());
 	m_hudFont->drawStr("LIFE", { 10, 30 }, Color(0.5f, 1.0f, 0.5f, 0.9f).toD3Dcolor());
 	m_hudFont->drawStr(std::to_string(m_player->getLife()), { 60, 30 }, Color(1.0f, 0.6f, 0.6f, 0.9f).toD3Dcolor());
 	m_hudFont->drawStr("LEVEL " + std::to_string(m_level), { 640 - 100, 10 }, Color(0.6f, 1.0f, 0.6f, 0.9f).toD3Dcolor());
