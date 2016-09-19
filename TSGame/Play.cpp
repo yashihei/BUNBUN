@@ -24,6 +24,7 @@ m_frameCount(0), m_gameoverCount(0), m_score(0), m_viewScore(0), m_level(1)
 	m_effects = std::make_shared<ActorManager<Effect>>();
 	
 	m_hudFont = std::make_shared<Font>(20, "Orbitron", false, m_graphicDevice->getDevice());
+	m_soundManager->play("bgm", 0.75f, true);
 }
 
 bool isHit(Vector2 pos1, Vector2 pos2, float radius1, float radius2) {
@@ -35,8 +36,10 @@ bool isHit(Vector2 pos1, Vector2 pos2, float radius1, float radius2) {
 void Play::update() {
 	if (m_player->getLife() == 0) {
 		m_gameoverCount++;
-		if (m_gameoverCount > 180)
+		if (m_gameoverCount > 180) {
+			m_soundManager->stop("bgm");
 			changeScene(SceneType::Title);
+		}
 		return;
 	}
 
@@ -48,6 +51,7 @@ void Play::update() {
 
 	if (m_viewScore < m_score)
 		m_viewScore += (m_score - m_viewScore) / 10 + 1;
+
 	m_frameCount++;
 	if (m_frameCount % 1200 == 0) {
 		m_level = std::min(m_level + 1, 20);
@@ -85,6 +89,7 @@ void Play::update() {
 			auto dis = enemy->getPos() - m_player->getPos();
 			auto len = m_flail->getVec().length();
 			enemy->blowOff(dis.normalized() * len);
+			m_soundManager->play("kin", 0.75f);
 		}
 		//hit wall?
 		auto pos = enemy->getPos();
@@ -93,6 +98,7 @@ void Play::update() {
 			enemy->kill();
 			auto effect = std::make_shared<Effect>(enemy->getPos(), enemy->getColor().setAlpha(1.0f), 75.0f, m_graphicDevice->getDevice());
 			m_effects->add(effect);
+			m_soundManager->play("zan");
 		}
 	}
 	//enemy vs player
@@ -101,6 +107,7 @@ void Play::update() {
 		if (m_player->canClash() && isHit(enemy->getPos(), m_player->getPos(), 10.0f, 5.0f)) {
 			allclean = true;
 			m_player->clash();
+			m_soundManager->play("giun");
 			break;
 		}
 	}
@@ -109,6 +116,7 @@ void Play::update() {
 		if (m_player->canClash() && isHit(bullet->getPos(), m_player->getPos(), 5.0f, 5.0f)) {
 			allclean = true;
 			m_player->clash();
+			m_soundManager->play("giun");
 			break;
 		}
 	}

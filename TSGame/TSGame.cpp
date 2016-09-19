@@ -9,6 +9,10 @@ TSGame::TSGame(HWND hWnd, HINSTANCE hInstance, bool fullScreen) :
 GameApp(hWnd, hInstance, fullScreen)
 {
 	Font::addFont("dat/orbitron-medium.otf");
+	m_soundManager->load("dat/kin.wav", "kin");
+	m_soundManager->load("dat/zan.wav", "zan");
+	m_soundManager->load("dat/giun.wav", "giun");
+	m_soundManager->load("dat/bgm.wav", "bgm");
 	changeScene(SceneType::Title);
 }
 
