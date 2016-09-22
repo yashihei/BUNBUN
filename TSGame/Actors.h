@@ -45,7 +45,7 @@ private:
 
 class Enemy : public Actor {
 public:
-	Enemy(Vector2 pos, PlayerPtr player, EffectMgrPtr effects, LPDIRECT3DDEVICE9 d3dDevice);
+	Enemy(Vector2 pos, PlayerPtr player, ParticleMgrPtr particles, LPDIRECT3DDEVICE9 d3dDevice);
 	void update() override;
 	void draw() override;
 	void blowOff(Vector2 vec);
@@ -53,11 +53,11 @@ public:
 	Color getColor() const { return m_color; }
 	float getSize() const { return m_size; }
 	int getScore() const { return m_score; }
-	bool canAttack() const { return m_boot | (m_damageCount > 0) ? false : true; }
+	bool canAttack() const { return m_boot || (m_damageCount > 0) ? false : true; }
 protected:
 	LPDIRECT3DDEVICE9 m_d3dDevice;
 	PlayerPtr m_player;
-	EffectMgrPtr m_effects;
+	ParticleMgrPtr m_particles;
 	Vector2 m_pos, m_vec;
 	Color m_color;
 	float m_rad, m_size;
@@ -67,14 +67,14 @@ protected:
 
 class RedEnemy : public Enemy {
 public:
-	RedEnemy(Vector2 pos, PlayerPtr player, EffectMgrPtr effects, LPDIRECT3DDEVICE9 d3dDevice);
+	RedEnemy(Vector2 pos, PlayerPtr player, ParticleMgrPtr particles, LPDIRECT3DDEVICE9 d3dDevice);
 	void update() override;
 };
 
 class Bullet;
 class OrangeEnemy : public Enemy {
 public:
-	OrangeEnemy(Vector2 pos, PlayerPtr player, BulletMgrPtr bullets, EffectMgrPtr effects, LPDIRECT3DDEVICE9 d3dDevice);
+	OrangeEnemy(Vector2 pos, PlayerPtr player, BulletMgrPtr bullets, ParticleMgrPtr particles, LPDIRECT3DDEVICE9 d3dDevice);
 	void update() override;
 private:
 	BulletMgrPtr m_bullets;
@@ -82,13 +82,13 @@ private:
 
 class GreenEnemy : public Enemy {
 public:
-	GreenEnemy(Vector2 pos, PlayerPtr player, EffectMgrPtr effects, LPDIRECT3DDEVICE9 d3dDevice);
+	GreenEnemy(Vector2 pos, PlayerPtr player, ParticleMgrPtr particles, LPDIRECT3DDEVICE9 d3dDevice);
 	void update() override;
 };
 
 class PurpleEnemy : public Enemy {
 public:
-	PurpleEnemy(Vector2 pos, float size, PlayerPtr player, EffectMgrPtr effects, LPDIRECT3DDEVICE9 d3dDevice);
+	PurpleEnemy(Vector2 pos, float size, PlayerPtr player, ParticleMgrPtr particles, LPDIRECT3DDEVICE9 d3dDevice);
 	void update() override;
 };
 
@@ -104,26 +104,28 @@ private:
 	int m_frameCount;
 };
 
-class Effect : public Actor {
+class Particle : public Actor {
 public:
-	Effect(Vector2 pos, Color color, float size, LPDIRECT3DDEVICE9 d3dDevice);
-	void update() override;
-	void draw() override;
-private:
+	Particle(Vector2 pos, LPDIRECT3DDEVICE9 d3dDevice);
+protected:
 	LPDIRECT3DDEVICE9 m_d3dDevice;
 	Vector2 m_pos;
-	Color m_color;
-	float m_size, m_alpha;
 	int m_frameCount;
 };
 
-class Item : public Actor {
+class Explosion : public Particle {
 public:
-	Item(Vector2 pos, LPDIRECT3DDEVICE9 d3dDevice);
-	void update();
-	void draw();
+	Explosion(Vector2 pos, Color color, float size, LPDIRECT3DDEVICE9 d3dDevice);
+	void update() override;
+	void draw() override;
 private:
-	Vector2 m_pos;
-	LPDIRECT3DDEVICE9 m_d3dDevice;
-	int m_frameCount;
+	Color m_color;
+	float m_size, m_alpha;
+};
+
+class Spark : public Particle {
+public:
+	Spark(Vector2 pos, int num, LPDIRECT3DDEVICE9 d3dDevice);
+	//void update() override;
+	//void draw() override;
 };

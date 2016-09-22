@@ -21,7 +21,7 @@ private:
 	FlailPtr m_flail;
 	EnemyMgrPtr m_enemies;
 	BulletMgrPtr m_bullets;
-	EffectMgrPtr m_effects;
+	ParticleMgrPtr m_particles;
 	FontPtr m_hudFont;
 	int m_frameCount, m_gameoverCount, m_score, m_viewScore, m_level;
 };

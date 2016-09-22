@@ -13,7 +13,7 @@ public:
 	SoundManager();
 	~SoundManager();
 	void load(std::string filePath, std::string alias);
-	void play(std::string alias, float volume = 1.0f, bool loop = false);
+	void play(std::string alias, float volume = 1.0f, float freqRatio = 1.0f, bool loop = false);
 	void stop(std::string alias);
 private:
 	IXAudio2* m_xAudio;
@@ -26,7 +26,7 @@ public:
 	Sound(std::string filePath, IXAudio2* xAudio);
 	~Sound();
 	void init(bool loop = false);
-	void play(float volume = 1.0f);
+	void play(float volume = 1.0f, float freqRatio = 1.0f);
 	void stop();
 private:
 	IXAudio2* m_xAudio;

@@ -108,10 +108,10 @@ void Flail::draw() {
 	}
 }
 
-Enemy::Enemy(Vector2 pos, PlayerPtr player, EffectMgrPtr effects, LPDIRECT3DDEVICE9 d3dDevice) :
+Enemy::Enemy(Vector2 pos, PlayerPtr player, ParticleMgrPtr particles, LPDIRECT3DDEVICE9 d3dDevice) :
 m_d3dDevice(d3dDevice),
 m_player(player),
-m_effects(effects),
+m_particles(particles),
 m_pos(pos), m_vec(),
 m_color(), m_rad(0), m_frameCount(0), m_damageCount(0), m_boot(true)
 {}
@@ -125,8 +125,8 @@ void Enemy::update() {
 		return;
 	}
 	if (std::abs(m_vec.length()) > 5.0f && m_frameCount % 3 == 0) {
-		auto effect = std::make_shared<Effect>(m_pos, m_color, 20.0f, m_d3dDevice);
-		m_effects->add(effect);
+		auto effect = std::make_shared<Explosion>(m_pos, m_color, 20.0f, m_d3dDevice);
+		m_particles->add(effect);
 	}
 }
 
@@ -144,8 +144,8 @@ void Enemy::blowOff(Vector2 vec) {
 	m_vec += vec;
 }
 
-RedEnemy::RedEnemy(Vector2 pos, PlayerPtr player, EffectMgrPtr effects, LPDIRECT3DDEVICE9 d3dDevice) :
-Enemy(pos, player, effects, d3dDevice)
+RedEnemy::RedEnemy(Vector2 pos, PlayerPtr player, ParticleMgrPtr particles, LPDIRECT3DDEVICE9 d3dDevice) :
+Enemy(pos, player, particles, d3dDevice)
 {
 	m_color = Color(1.0f, 0.3f, 0.3f, 0.6f);
 	m_size = 30.0f;
@@ -161,8 +161,8 @@ void RedEnemy::update() {
 	m_pos += Vector2::fromAngle(dis.toAngle()) * 1.5f + m_vec;
 }
 
-OrangeEnemy::OrangeEnemy(Vector2 pos, PlayerPtr player, BulletMgrPtr bullets, EffectMgrPtr effects, LPDIRECT3DDEVICE9 d3dDevice) :
-Enemy(pos, player, effects, d3dDevice), m_bullets(bullets)
+OrangeEnemy::OrangeEnemy(Vector2 pos, PlayerPtr player, BulletMgrPtr bullets, ParticleMgrPtr particles, LPDIRECT3DDEVICE9 d3dDevice) :
+Enemy(pos, player, particles, d3dDevice), m_bullets(bullets)
 {
 	m_color = Color(1.0f, 0.5f, 0.0f, 0.6f);
 	m_size = 30.0f;
@@ -187,8 +187,8 @@ void OrangeEnemy::update() {
 	m_pos += m_vec;
 }
 
-GreenEnemy::GreenEnemy(Vector2 pos, PlayerPtr player, EffectMgrPtr effects, LPDIRECT3DDEVICE9 d3dDevice) :
-Enemy(pos, player, effects, d3dDevice)
+GreenEnemy::GreenEnemy(Vector2 pos, PlayerPtr player, ParticleMgrPtr particles, LPDIRECT3DDEVICE9 d3dDevice) :
+Enemy(pos, player, particles, d3dDevice)
 {
 	m_color = Color(0.5f, 1.0f, 0.5f, 0.5f);
 	m_size = 30.0f;
@@ -204,8 +204,8 @@ void GreenEnemy::update() {
 	m_pos += Vector2::fromAngle(dis.toAngle()) * 2.5f + m_vec;
 }
 
-PurpleEnemy::PurpleEnemy(Vector2 pos, float size, PlayerPtr player, EffectMgrPtr effects, LPDIRECT3DDEVICE9 d3dDevice) :
-Enemy(pos, player, effects, d3dDevice)
+PurpleEnemy::PurpleEnemy(Vector2 pos, float size, PlayerPtr player, ParticleMgrPtr particles, LPDIRECT3DDEVICE9 d3dDevice) :
+Enemy(pos, player, particles, d3dDevice)
 {
 	m_color = Color(1.0f, 0.3f, 0.8f, 0.5f);
 	m_size = size;
@@ -245,29 +245,27 @@ void Bullet::draw() {
 	Shape::drawCircle(m_d3dDevice, m_pos, 5.0f, Color(1.0f, 1.0f, 1.0f, a).toD3Dcolor());
 }
 
-Effect::Effect(Vector2 pos, Color color, float size, LPDIRECT3DDEVICE9 d3dDevice) :
-m_d3dDevice(d3dDevice), m_pos(pos), m_color(color), m_size(size), m_alpha(color.a), m_frameCount(0)
+Particle::Particle(Vector2 pos, LPDIRECT3DDEVICE9 d3dDevice) :
+m_pos(pos), m_d3dDevice(d3dDevice), m_frameCount(0)
 {}
 
-void Effect::update() {
+Explosion::Explosion(Vector2 pos, Color color, float size, LPDIRECT3DDEVICE9 d3dDevice) :
+Particle(pos, d3dDevice),
+m_color(color), m_size(size), m_alpha(color.a)
+{}
+
+void Explosion::update() {
 	m_frameCount++;
 	if (m_frameCount > 60)
 		kill();
 }
 
-void Effect::draw() {
+void Explosion::draw() {
 	m_color.a = Easing::OutQuint(m_frameCount, 60, m_alpha, 0.0);
 	Shape::drawCircle(m_d3dDevice, m_pos, Easing::OutQuint(m_frameCount, 60, 0.0, m_size), m_color.toD3Dcolor());
 }
 
-Item::Item(Vector2 pos, LPDIRECT3DDEVICE9 d3dDevice) :
-m_d3dDevice(d3dDevice), m_pos(pos)
+Spark::Spark(Vector2 pos, int num, LPDIRECT3DDEVICE9 d3dDevice) :
+Particle(pos, d3dDevice)
 {
-}
-
-void Item::update() {
-	m_frameCount++;
-}
-
-void Item::draw() {
 }

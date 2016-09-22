@@ -39,7 +39,15 @@ public:
 			m_select = wrap(m_select + 1, 0, 4);
 	}
 	void draw() override {
-		m_titleFont->drawStr("BUN BUN", { 10, 200 }, Color(1.0f, 0.5f, 0.0f, 1.0f).toD3Dcolor());
+		for (int i = 1; i < 16; i++) {
+			Shape::drawRectangle(m_graphicDevice->getDevice(), { i*40.0f-0.5f, 0.0f }, { i*40.0f+0.5f, 480.0f }, Color(0.5f, 0.5f, 1.0f, 0.15f).toD3Dcolor());
+			Shape::drawRectangle(m_graphicDevice->getDevice(), { i*40.0f-1.5f, 0.0f }, { i*40.0f+1.5f, 480.0f }, Color(0.5f, 0.5f, 1.0f, 0.075f).toD3Dcolor());
+		}
+		for (int i = 1; i < 12; i++) {
+			Shape::drawRectangle(m_graphicDevice->getDevice(), { 0.0f, i*40.0f-0.5f }, { 640.0f, i*40.0f+0.5f }, Color(0.5f, 0.5f, 1.0f, 0.15f).toD3Dcolor());
+			Shape::drawRectangle(m_graphicDevice->getDevice(), { 0.0f, i*40.0f-1.5f }, { 640.0f, i*40.0f+1.5f }, Color(0.5f, 0.5f, 1.0f, 0.075f).toD3Dcolor());
+		}
+		m_titleFont->drawStr("BUNBUN", { 10, 200 }, Color(1.0f, 0.5f, 0.0f, 1.0f).toD3Dcolor());
 
 		Shape::drawRectangle(m_graphicDevice->getDevice(), {0.0f, 250 + m_select*25.0f}, {640.0f, 275 + m_select*25.0f}, Color(1.0f, 1.0f, 1.0f, 1.0f).toD3Dcolor());
 		const std::vector<std::string> texts = { "START GAME", "HOW TO PLAY", "RANKING", "EXIT" };

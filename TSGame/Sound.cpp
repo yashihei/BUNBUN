@@ -37,7 +37,7 @@ void SoundManager::load(std::string filePath, std::string alias) {
 	m_sounds[alias] = sound;
 }
 
-void SoundManager::play(std::string alias, float volume, bool loop) {
+void SoundManager::play(std::string alias, float volume, float freqRatio, bool loop) {
 	m_sounds[alias]->init(loop);
 	m_sounds[alias]->play(volume);
 }
@@ -74,8 +74,9 @@ void Sound::init(bool loop) {
 	m_sourceVoice->SubmitSourceBuffer(&buffer);
 }
 
-void Sound::play(float volume) {
+void Sound::play(float volume, float freqRatio) {
 	m_sourceVoice->SetVolume(volume);
+	m_sourceVoice->SetFrequencyRatio(freqRatio);
 	m_sourceVoice->Start();
 }
 

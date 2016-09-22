@@ -21,10 +21,10 @@ m_frameCount(0), m_gameoverCount(0), m_score(0), m_viewScore(0), m_level(1)
 	m_flail = std::make_shared<Flail>(m_player, m_graphicDevice->getDevice());
 	m_enemies = std::make_shared<ActorManager<Enemy>>();
 	m_bullets = std::make_shared<ActorManager<Bullet>>();
-	m_effects = std::make_shared<ActorManager<Effect>>();
+	m_particles = std::make_shared<ActorManager<Particle>>();
 	
 	m_hudFont = std::make_shared<Font>(20, "Orbitron", false, m_graphicDevice->getDevice());
-	m_soundManager->play("bgm", 0.75f, true);
+	m_soundManager->play("bgm", 0.75f, 1.0f, true);
 }
 
 bool isHit(Vector2 pos1, Vector2 pos2, float radius1, float radius2) {
@@ -47,7 +47,7 @@ void Play::update() {
 	m_flail->update();
 	m_enemies->update();
 	m_bullets->update();
-	m_effects->update();
+	m_particles->update();
 
 	if (m_viewScore < m_score)
 		m_viewScore += (m_score - m_viewScore) / 10 + 1;
@@ -70,16 +70,16 @@ void Play::update() {
 		if (m_level < 4) r -= 0.15f;
 		if (m_level < 6) r -= 0.05f;
 		if (r < 0.75f) {
-			auto enemy = std::make_shared<RedEnemy>(pos, m_player, m_effects, m_graphicDevice->getDevice());
+			auto enemy = std::make_shared<RedEnemy>(pos, m_player, m_particles, m_graphicDevice->getDevice());
 			m_enemies->add(enemy);
 		} else if (r < 0.85f) {
-			auto enemy = std::make_shared<OrangeEnemy>(pos, m_player, m_bullets, m_effects, m_graphicDevice->getDevice());
+			auto enemy = std::make_shared<OrangeEnemy>(pos, m_player, m_bullets, m_particles, m_graphicDevice->getDevice());
 			m_enemies->add(enemy);
 		} else if (r < 0.95f) {
-			auto enemy = std::make_shared<PurpleEnemy>(pos, 60.0f, m_player, m_effects, m_graphicDevice->getDevice());
+			auto enemy = std::make_shared<PurpleEnemy>(pos, 60.0f, m_player, m_particles, m_graphicDevice->getDevice());
 			m_enemies->add(enemy);
 		} else {
-			auto enemy = std::make_shared<GreenEnemy>(pos, m_player, m_effects, m_graphicDevice->getDevice());
+			auto enemy = std::make_shared<GreenEnemy>(pos, m_player, m_particles, m_graphicDevice->getDevice());
 			m_enemies->add(enemy);
 		}
 	}
@@ -96,9 +96,9 @@ void Play::update() {
 		if (pos.x < 0 || pos.x > 640 || pos.y < 0 || pos.y > 480) {
 			m_score += enemy->getScore() * m_level;
 			enemy->kill();
-			auto effect = std::make_shared<Effect>(enemy->getPos(), enemy->getColor().setAlpha(1.0f), 75.0f, m_graphicDevice->getDevice());
-			m_effects->add(effect);
-			m_soundManager->play("zan");
+			auto effect = std::make_shared<Explosion>(enemy->getPos(), enemy->getColor().setAlpha(1.0f), 75.0f, m_graphicDevice->getDevice());
+			m_particles->add(effect);
+			m_soundManager->play("don");
 		}
 	}
 	//enemy vs player
@@ -123,8 +123,8 @@ void Play::update() {
 	if (allclean) {
 		for (auto& enemy : *m_enemies) {
 			enemy->kill();
-			auto effect = std::make_shared<Effect>(enemy->getPos(), enemy->getColor().setAlpha(1.0f), 75.0f, m_graphicDevice->getDevice());
-			m_effects->add(effect);
+			auto effect = std::make_shared<Explosion>(enemy->getPos(), enemy->getColor().setAlpha(1.0f), 75.0f, m_graphicDevice->getDevice());
+			m_particles->add(effect);
 		}
 		m_bullets->clear();
 	}
@@ -141,7 +141,7 @@ void Play::draw() {
 		Shape::drawRectangle(m_graphicDevice->getDevice(), { 0.0f, i*40.0f-1.5f }, { 640.0f, i*40.0f+1.5f }, Color(0.5f, 0.5f, 1.0f, 0.075f).toD3Dcolor());
 	}
 
-	m_effects->draw();
+	m_particles->draw();
 	m_flail->draw();
 	m_player->draw();
 	m_enemies->draw();
