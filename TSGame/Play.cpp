@@ -90,14 +90,16 @@ void Play::update() {
 			auto len = m_flail->getVec().length();
 			enemy->blowOff(dis.normalized() * len);
 			m_soundManager->play("kin", 0.75f);
+			auto sparks = std::make_shared<Sparks>(enemy->getPos(), 15, enemy->getColor(), m_random, m_graphicDevice->getDevice());
+			m_particles->add(sparks);
 		}
 		//hit wall?
 		auto pos = enemy->getPos();
 		if (pos.x < 0 || pos.x > 640 || pos.y < 0 || pos.y > 480) {
 			m_score += enemy->getScore() * m_level;
 			enemy->kill();
-			auto effect = std::make_shared<Explosion>(enemy->getPos(), enemy->getColor().setAlpha(1.0f), 75.0f, m_graphicDevice->getDevice());
-			m_particles->add(effect);
+			auto explosion = std::make_shared<Explosion>(enemy->getPos(), enemy->getColor().setAlpha(1.0f), 75.0f, m_graphicDevice->getDevice());
+			m_particles->add(explosion);
 			m_soundManager->play("don");
 		}
 	}
@@ -123,8 +125,8 @@ void Play::update() {
 	if (allclean) {
 		for (auto& enemy : *m_enemies) {
 			enemy->kill();
-			auto effect = std::make_shared<Explosion>(enemy->getPos(), enemy->getColor().setAlpha(1.0f), 75.0f, m_graphicDevice->getDevice());
-			m_particles->add(effect);
+			auto explosion = std::make_shared<Explosion>(enemy->getPos(), enemy->getColor().setAlpha(1.0f), 75.0f, m_graphicDevice->getDevice());
+			m_particles->add(explosion);
 		}
 		m_bullets->clear();
 	}

@@ -1,6 +1,8 @@
 #pragma once
+#define NOMINMAX
 #include <d3dx9.h>
 #include <deque>
+#include <vector>
 #include "Actor.h"
 #include "Vector2.h"
 #include "Color.h"
@@ -123,9 +125,16 @@ private:
 	float m_size, m_alpha;
 };
 
-class Spark : public Particle {
+class Sparks : public Particle {
 public:
-	Spark(Vector2 pos, int num, LPDIRECT3DDEVICE9 d3dDevice);
-	//void update() override;
-	//void draw() override;
+	Sparks(Vector2 pos, int num, Color color, RandomPtr random, LPDIRECT3DDEVICE9 d3dDevice);
+	void update() override;
+	void draw() override;
+private:
+	struct Spark {
+		Spark(Vector2 pos_, Vector2 vec_) : pos(pos_), vec(vec_) {}
+		Vector2 pos, vec;
+	};
+	std::vector<Spark> m_sparks;
+	Color m_color;
 };

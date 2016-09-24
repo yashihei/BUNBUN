@@ -7,6 +7,7 @@
 #include "Easing.h"
 #include "Font.h"
 #include "Sound.h"
+#include "Random.h"
 
 Player::Player(InputMgrPtr inputManager, LPDIRECT3DDEVICE9 d3dDevice) :
 m_inputManager(inputManager), m_d3dDevice(d3dDevice),
@@ -77,7 +78,7 @@ void Player::draw() {
 
 Flail::Flail(PlayerPtr player, LPDIRECT3DDEVICE9 d3dDevice) :
 m_player(player), m_d3dDevice(d3dDevice),
-m_pos(m_player->getPos()), m_vec(), m_radius(25.0f), m_frameCount(0)
+m_pos(m_player->getPos()), m_vec(), m_radius(30.0f), m_frameCount(0)
 {}
 
 void Flail::update() {
@@ -85,7 +86,7 @@ void Flail::update() {
 
 	auto dis = m_player->getPos() - m_pos;
 	m_vec += dis / 50;
-	m_vec *= 0.97f;
+	m_vec *= 0.975f;
 	m_pos += m_vec;
 
 	m_trails.push_front(m_pos);
@@ -94,7 +95,7 @@ void Flail::update() {
 }
 
 void Flail::draw() {
-	auto color = HSV(0.18f - 0.15f/20 * m_vec.length(), 1.0f, 1.0f).toColor(0.6f);
+	auto color = HSV(0.18f - std::min(0.18f/25, 0.18f) * m_vec.length(), 1.0f, 1.0f).toColor(0.6f);
 	auto dis = m_player->getPos() - m_pos;
 	for (int i = 0; i < 5; i++) {
 		Shape::drawCircle(m_d3dDevice, m_pos + dis/5.0f * i, 5.0f, color.toD3Dcolor());
@@ -125,7 +126,7 @@ void Enemy::update() {
 		return;
 	}
 	if (std::abs(m_vec.length()) > 5.0f && m_frameCount % 3 == 0) {
-		auto effect = std::make_shared<Explosion>(m_pos, m_color, 20.0f, m_d3dDevice);
+		auto effect = std::make_shared<Explosion>(m_pos, m_color, 17.5f, m_d3dDevice);
 		m_particles->add(effect);
 	}
 }
@@ -223,7 +224,7 @@ void PurpleEnemy::update() {
 	if (m_pos.x < 0 || m_pos.x > 640 || m_pos.y < 0 || m_pos.y > 480) {
 		if (m_size == 30.0f) return;
 		m_size -= 15.0f;
-		m_vec *= -0.5f;
+		m_vec *= -0.35f;
 		m_pos = Vector2(clamp(m_pos.x, 0.0f, 640.0f), clamp(m_pos.y, 0.0f, 480.0f));
 	}
 }
@@ -265,7 +266,25 @@ void Explosion::draw() {
 	Shape::drawCircle(m_d3dDevice, m_pos, Easing::OutQuint(m_frameCount, 60, 0.0, m_size), m_color.toD3Dcolor());
 }
 
-Spark::Spark(Vector2 pos, int num, LPDIRECT3DDEVICE9 d3dDevice) :
-Particle(pos, d3dDevice)
+Sparks::Sparks(Vector2 pos, int num, Color color, RandomPtr random, LPDIRECT3DDEVICE9 d3dDevice) :
+Particle(pos, d3dDevice), m_color(color)
 {
+	for (int i = 0; i < num/2; i++)
+		m_sparks.emplace_back(m_pos, Vector2(random->nextPlusMinus(2.0f), random->nextPlusMinus(2.0f)));
+	for (int i = 0; i < num/2; i++)
+		m_sparks.emplace_back(m_pos, Vector2(random->nextPlusMinus(5.0f), random->nextPlusMinus(5.0f)));
+}
+
+void Sparks::update() {
+	m_frameCount++;
+	if (m_frameCount > 30)
+		kill();
+	for (auto& spark : m_sparks)
+		spark.pos += spark.vec;
+}
+
+void Sparks::draw() {
+	m_color.a = Easing::Linear(m_frameCount, 30, 1.0f, 0.0f);
+	for (auto& spark : m_sparks)
+		Shape::drawCircle(m_d3dDevice, spark.pos, 1.5f, m_color.toD3Dcolor());
 }
