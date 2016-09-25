@@ -12,6 +12,7 @@
 #include "Shape.h"
 #include "Color.h"
 #include "Easing.h"
+#include "HiScore.h"
 
 Play::Play(GraphicDevicePtr graphic, SoundMgrPtr soundManager, InputMgrPtr inputManager, RandomPtr random) :
 m_graphicDevice(graphic), m_soundManager(soundManager), m_inputManager(inputManager), m_random(random),
@@ -37,6 +38,7 @@ void Play::update() {
 	if (m_player->getLife() == 0) {
 		m_gameoverCount++;
 		if (m_gameoverCount > 180) {
+			HiScore::regist(m_score);
 			m_soundManager->stop("bgm");
 			changeScene(SceneType::Title);
 		}
@@ -53,7 +55,7 @@ void Play::update() {
 		m_viewScore += (m_score - m_viewScore) / 10 + 1;
 
 	m_frameCount++;
-	if (m_frameCount % 1200 == 0) {
+	if (m_frameCount % 900 == 0) {
 		m_level = std::min(m_level + 1, 20);
 	}
 	if (m_random->next(100 - m_level * 5) == 0 && m_enemies->size() < (1 + m_level)) {
@@ -73,10 +75,10 @@ void Play::update() {
 			auto enemy = std::make_shared<RedEnemy>(pos, m_player, m_particles, m_graphicDevice->getDevice());
 			m_enemies->add(enemy);
 		} else if (r < 0.85f) {
-			auto enemy = std::make_shared<OrangeEnemy>(pos, m_player, m_bullets, m_particles, m_graphicDevice->getDevice());
+			auto enemy = std::make_shared<PurpleEnemy>(pos, 60.0f, m_player, m_particles, m_graphicDevice->getDevice());
 			m_enemies->add(enemy);
 		} else if (r < 0.95f) {
-			auto enemy = std::make_shared<PurpleEnemy>(pos, 60.0f, m_player, m_particles, m_graphicDevice->getDevice());
+			auto enemy = std::make_shared<OrangeEnemy>(pos, m_player, m_bullets, m_particles, m_graphicDevice->getDevice());
 			m_enemies->add(enemy);
 		} else {
 			auto enemy = std::make_shared<GreenEnemy>(pos, m_player, m_particles, m_graphicDevice->getDevice());
@@ -90,7 +92,7 @@ void Play::update() {
 			auto len = m_flail->getVec().length();
 			enemy->blowOff(dis.normalized() * len);
 			m_soundManager->play("kin", 0.75f);
-			auto sparks = std::make_shared<Sparks>(enemy->getPos(), 15, enemy->getColor(), m_random, m_graphicDevice->getDevice());
+			auto sparks = std::make_shared<Sparks>(enemy->getPos(), 10, enemy->getColor(), m_random, m_graphicDevice->getDevice());
 			m_particles->add(sparks);
 		}
 		//hit wall?

@@ -122,5 +122,8 @@
     <ClInclude Include="Fwd.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="HiScore.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

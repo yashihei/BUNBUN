@@ -12,6 +12,7 @@ GameApp(hWnd, hInstance, fullScreen)
 	m_soundManager->load("dat/kin.wav", "kin");
 	m_soundManager->load("dat/don.wav", "don");
 	m_soundManager->load("dat/giun.wav", "giun");
+	m_soundManager->load("dat/cursor.wav", "cursor");
 	m_soundManager->load("dat/bgm.wav", "bgm");
 	changeScene(SceneType::Title);
 }

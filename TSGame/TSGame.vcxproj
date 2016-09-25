@@ -95,6 +95,7 @@
     <ClInclude Include="Fwd.h" />
     <ClInclude Include="GameApp.h" />
     <ClInclude Include="Graphic.h" />
+    <ClInclude Include="HiScore.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Play.h" />
     <ClInclude Include="Point.h" />

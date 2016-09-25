@@ -78,7 +78,7 @@ void Player::draw() {
 
 Flail::Flail(PlayerPtr player, LPDIRECT3DDEVICE9 d3dDevice) :
 m_player(player), m_d3dDevice(d3dDevice),
-m_pos(m_player->getPos()), m_vec(), m_radius(30.0f), m_frameCount(0)
+m_pos(m_player->getPos()), m_vec(), m_radius(25.0f), m_frameCount(0)
 {}
 
 void Flail::update() {
@@ -86,7 +86,7 @@ void Flail::update() {
 
 	auto dis = m_player->getPos() - m_pos;
 	m_vec += dis / 50;
-	m_vec *= 0.975f;
+	m_vec *= 0.97f;
 	m_pos += m_vec;
 
 	m_trails.push_front(m_pos);
