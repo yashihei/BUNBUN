@@ -143,11 +143,11 @@ float normalized(SHORT n) {
 	return static_cast<float>(n) / 0x7FFF;
 }
 
-Vector2 XInput::getLeftThumb() {
+Vector2 XInput::getLSDir() {
 	return{ normalized(m_xInputState.Gamepad.sThumbLX), -normalized(m_xInputState.Gamepad.sThumbLY) };
 }
 
-Vector2 XInput::getRightThumb() {
+Vector2 XInput::getRSDir() {
 	return{ normalized(m_xInputState.Gamepad.sThumbRX), -normalized(m_xInputState.Gamepad.sThumbRY) };
 }
 
@@ -181,8 +181,8 @@ void InputManager::update() {
 
 Vector2 InputManager::getAxis() {
 	Vector2 dir;
-	if (!m_xInput->getLeftThumb().isZero()) {
-		dir = m_xInput->getLeftThumb();
+	if (!m_xInput->getLSDir().isZero()) {
+		dir = m_xInput->getLSDir();
 	} else {
 		if (isPressedRight()) dir.x = 1.0f;
 		if (isPressedLeft()) dir.x = -1.0f;
