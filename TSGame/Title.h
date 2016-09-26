@@ -11,6 +11,7 @@
 #include "Texture.h"
 #include "HiScore.h"
 
+//“ËŠÑƒR[ƒh‚Å‚·><
 class Title : public Scene {
 public:
 	Title(GraphicDevicePtr graphic, SoundMgrPtr soundManager, InputMgrPtr inputManager) :
@@ -38,6 +39,8 @@ public:
 			m_manualFlag = false;
 			return;
 		}
+		if (m_hiScoreFlag || m_manualFlag)
+			return;
 
 		if (m_inputManager->isClickedButton()) {
 			if (m_select == 0)
@@ -77,15 +80,19 @@ public:
 		if (m_hiScoreFlag) {
 			const std::vector<int> scores = HiScore::load();
 			for (int i = 0; i < scores.size(); i++) {
-				auto text = std::to_string(i + 1) + (i == 0 ? "ST" : i == 1 ? "ND" : i == 2 ? "RD" : "TH") + " : " + std::to_string(scores[i]);
+				auto text = std::to_string(i + 1) + (i == 0 ? "ST" : i == 1 ? "ND" : i == 2 ? "RD" : "TH");
 				m_textFont->drawStr(text, { 40, 40 * (i+1) });
+				m_textFont->drawStr(std::to_string(scores[i]), { 150, 40 * (i + 1) });
 			}
 			return;
 		}
 
+		Shape::drawRectangle(m_graphicDevice->getDevice(), { 0.0f, 240.0f }, { 30.0f*m_frameCount, 242.0f }, Color(1.0f, 0.6f, 0.0f, 1.0f).toD3Dcolor());
+		if (m_frameCount < 32)
+			return;
+
 		m_titleFont->drawStr("BUN BUN", { 10, 180 }, Color(1.0f, 0.6f, 0.0f, 1.0f).toD3Dcolor());
 
-		Shape::drawRectangle(m_graphicDevice->getDevice(), { 0.0f, 240.0f }, { 640.0f, 242.0f }, Color(1.0f, 0.6f, 0.0f, 1.0f).toD3Dcolor());
 		const std::vector<std::string> texts = { "START GAME", "HOW TO PLAY", "RANKING", "EXIT" };
 		for (int i = 0; i < texts.size(); i++) {
 			auto color = (i == m_select) ? Color(1.0f, 1.0f, 1.0f, 1.0f) : Color(0.5f, 0.5f, 0.5f, 1.0f);
